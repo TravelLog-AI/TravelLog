@@ -12,14 +12,20 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "platforms": [
+      "android",
+      "ios"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "dev.binmai.travellog"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "dev.binmai.travellog"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +37,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b6f5d49d-3886-4582-a1cb-bded7cca5719"
+      }
     }
   }
 }

@@ -6,6 +6,9 @@ import { Button, Divider, TextInput } from "react-native-paper";
 import { authStyles } from "../styles";
 import PrimaryButton from "../../../components/Primary/Button";
 import { useRouter } from "expo-router";
+import { showToast } from "../../../utils/toast";
+import { getAuth, signInWithCredential, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect } from "firebase/auth";
+import { auth, googleProvider } from "../../../config/firebase.config";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -13,15 +16,47 @@ export default function SignIn() {
 
   const router = useRouter();
 
+  const handleSignIn = async () => {
+    if (!email || !password) {
+      showToast("error", "Error", "Please fill out all blanks");
+      return;
+    }
+    
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        email.toLowerCase(),
+        password
+      );
+
+      showToast("success", "Success", "Login Successfully");
+    } catch (error) {
+      console.log("Something Went Wrong", error);
+      showToast("error", "Somehing Went Wrong", error);
+    }
+  };
+
+  const handleSignInWithGoogle = async () => {
+    try {
+      const result = await signInWithCredential(auth, googleProvider)
+
+      // Retrieve user credentials
+      const userCredential = await auth.getRedirectResult();
+
+      if (userCredential.user) {
+        // User is signed in
+        showToast('success', 'Success', 'Login Successfully');
+      }
+    } catch (error) {
+      console.log('Something Went Wrong', error);
+      showToast('error', 'Something Went Wrong', error.message);
+    }
+  };
+
   return (
     <ScrollView style={primaryStyles.screenBackground}>
       {/* MISSING: Logo */}
-      <Text
-        style={[
-          primaryStyles.heading,
-          { textAlign: "left" },
-        ]}
-      >
+      <Text style={[primaryStyles.heading, { textAlign: "left" }]}>
         Welcome Back
       </Text>
       <Text
@@ -35,7 +70,7 @@ export default function SignIn() {
 
       {/* Credential Inputs */}
       <View style={authStyles.inputContainer}>
-        <Text style={{color: Colors.PRIMARY}}>Email</Text>
+        <Text style={{ color: Colors.PRIMARY }}>Email</Text>
         <TextInput
           label="Email"
           value={email}
@@ -44,7 +79,7 @@ export default function SignIn() {
         />
       </View>
       <View style={authStyles.inputContainer}>
-        <Text style={{color: Colors.PRIMARY}}>Password</Text>
+        <Text style={{ color: Colors.PRIMARY }}>Password</Text>
         <TextInput
           label="Password"
           value={password}
@@ -55,7 +90,7 @@ export default function SignIn() {
 
       {/* Buttons Group */}
       <View style={authStyles.buttonContainer}>
-        <PrimaryButton mode="contained">Sign In</PrimaryButton>
+        <PrimaryButton mode="contained" onPress={handleSignIn}>Sign In</PrimaryButton>
         <View
           style={{
             display: "flex",
@@ -64,21 +99,30 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
-          <Divider style={{width: '40%'}} />
-          <Text style={{marginHorizontal: 10, fontSize: 20, fontFamily: 'open-sans-light' }}>or</Text>
-          <Divider style={{width: '40%'}} />
+          <Divider style={{ width: "40%" }} />
+          <Text
+            style={{
+              marginHorizontal: 10,
+              fontSize: 20,
+              fontFamily: "open-sans-light",
+            }}
+          >
+            or
+          </Text>
+          <Divider style={{ width: "40%" }} />
         </View>
         <PrimaryButton
-          icon='google'
+          icon="google"
           mode="outlined"
           labelStyle={{ color: Colors.PRIMARY }}
+          onPress={handleSignInWithGoogle}
         >
           Continue With Google
         </PrimaryButton>
         <PrimaryButton
           mode="contained"
-          style={{backgroundColor: Colors.SECONDARY, marginTop: '8%'}}
-          onPress={() => router.push('auth/create-account/credentials')}
+          style={{ backgroundColor: Colors.SECONDARY, marginTop: "8%" }}
+          onPress={() => router.push("auth/create-account/credentials")}
         >
           Create An Account
         </PrimaryButton>
