@@ -42,7 +42,7 @@ export default function Address() {
         />
       </View>
       <PrimaryButton
-        onPress={() => router.push("auth/create-account/address")}
+        onPress={() => router.push("/(tabs)/mytrip")}
         mode="contained"
         style={{ marginTop: 20 }}
       >
