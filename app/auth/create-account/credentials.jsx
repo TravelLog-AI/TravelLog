@@ -60,16 +60,16 @@ export default function Credentials() {
           <Text style={{marginHorizontal: 10, fontSize: 20, fontFamily: 'open-sans-light' }}>or</Text>
           <Divider style={{width: '40%'}} />
         </View>
-        <PrimaryButton
+        {/* <PrimaryButton
           icon='google'
           mode="outlined"
           labelStyle={{ color: Colors.PRIMARY }}
         >
           Sign Up With Google
-        </PrimaryButton>
+        </PrimaryButton> */}
         <PrimaryButton
           mode="contained"
-          style={{backgroundColor: Colors.SECONDARY, marginTop: '10%'}}
+          style={{backgroundColor: Colors.SECONDARY}}
         >
           Sign In
         </PrimaryButton>
