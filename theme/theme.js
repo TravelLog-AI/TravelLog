@@ -1,6 +1,6 @@
 // theme.js
-import { Colors } from '@/constants/Colors';
 import { DefaultTheme, configureFonts } from 'react-native-paper';
+import { Colors } from '../constants/Colors';
 
 const fontConfig = {
   web: {
