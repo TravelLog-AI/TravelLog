@@ -11,7 +11,6 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../../config/firebase.config";
 import { fetchData } from "../../../utils/db";
 import { addDoc, collection, where } from "firebase/firestore";
-import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -93,7 +92,12 @@ export default function SignIn() {
       }
 
       showToast("success", "Success", "Login Successfully");
+      
       // Navigate to home screen
+      setTimeout(() => {
+        router.push('(tabs)/mytrip');
+      }, 1000);
+
       setIsLoading(false);
     } catch (error) {
       console.log("Something Went Wrong", error.code, error.message);
