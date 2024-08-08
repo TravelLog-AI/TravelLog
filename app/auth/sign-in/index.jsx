@@ -2,20 +2,22 @@ import { View, Text, ScrollView } from "react-native";
 import React, { useState } from "react";
 import { primaryStyles } from "../../../styles/primary";
 import { Colors } from "../../../constants/Colors";
-import { Divider, TextInput } from "react-native-paper";
+import { Divider, Icon, TextInput } from "react-native-paper";
 import { authStyles } from "../styles";
 import PrimaryButton from "../../../components/Primary/Button";
 import { useRouter } from "expo-router";
 import { showToast } from "../../../utils/toast";
-import {
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../../../config/firebase.config";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../../config/firebase.config";
+import { fetchData } from "../../../utils/db";
+import { addDoc, collection, where } from "firebase/firestore";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isShowPassword, setIsShowPassword] = useState(false);
   // const [userInfo, setUserInfo] = useState();
   // const [request, response, promptAsync] = Google.useAuthRequest({
   //   iosClientId: '394416992655-q0mvjtevk8ero9rfjn3akk79m94rv6sr.apps.googleusercontent.com',
@@ -24,6 +26,9 @@ export default function SignIn() {
   // });
 
   const router = useRouter();
+
+  // Collections
+  const userCollection = collection(db, "Users");
 
   // useEffect(() => {
   //   // Make sure to handle other cases
@@ -42,16 +47,66 @@ export default function SignIn() {
     }
 
     try {
+      setIsLoading(true);
       await signInWithEmailAndPassword(auth, email.toLowerCase(), password);
+      const userData = await fetchData(
+        "Users",
+        where("email", "==", email.toLowerCase())
+      );
+
+      // Handle if user does not exist in database
+      if (userData.length === 0) {
+        const createdAt = new Date();
+        const userNewDoc = await addDoc(userCollection, {
+          email: email.toLowerCase(),
+          createdAt,
+        });
+        router.push({
+          pathname: "auth/create-account/name",
+          params: { userDocId: userNewDoc.id },
+        });
+        setIsLoading(false);
+
+        return;
+      }
+
+      // Handle if user does not add their name to system
+      const currentUser = userData[0];
+      if (!currentUser?.name) {
+        router.push({
+          pathname: "auth/create-account/name",
+          params: { userDocId: currentUser.id },
+        });
+        setIsLoading(false);
+
+        return;
+      }
+
+      // Handle if user does not add their address to system
+      if (!currentUser?.address) {
+        router.push({
+          pathname: "auth/create-account/address",
+          params: { userDocId: currentUser.id },
+        });
+        setIsLoading(false);
+        return;
+      }
 
       showToast("success", "Success", "Login Successfully");
+      // Navigate to home screen
+      setIsLoading(false);
     } catch (error) {
       console.log("Something Went Wrong", error.code, error.message);
-      if (error.code === 'auth/invalid-credential') {
-        showToast('error', 'Invalid Credentials', 'Your email/password is incorrect');
+      if (error.code === "auth/invalid-credential") {
+        showToast(
+          "error",
+          "Invalid Credentials",
+          "Your email/password is incorrect"
+        );
       } else {
         showToast("error", "Somehing Went Wrong", error);
       }
+      setIsLoading(false);
     }
   };
 
@@ -104,12 +159,26 @@ export default function SignIn() {
           value={password}
           onChangeText={(text) => setPassword(text)}
           mode="outlined"
+          secureTextEntry={!isShowPassword}
+          right={
+            <TextInput.Icon
+              icon={isShowPassword ? 'eye-off' : 'eye'}
+              onPress={(e) => {
+                e.preventDefault();
+                setIsShowPassword(!isShowPassword);
+              }}
+            />
+          }
         />
       </View>
 
       {/* Buttons Group */}
       <View style={authStyles.buttonContainer}>
-        <PrimaryButton mode="contained" onPress={handleSignIn}>
+        <PrimaryButton
+          loading={isLoading}
+          mode="contained"
+          onPress={handleSignIn}
+        >
           Sign In
         </PrimaryButton>
         <View

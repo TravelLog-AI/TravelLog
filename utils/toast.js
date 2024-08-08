@@ -5,6 +5,6 @@ export const showToast = (type, title, text) => {
     type: type,
     text1: title,
     text2: text,
-    position: "bottom",
+    position: "top",
   });
 };
