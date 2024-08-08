@@ -1,8 +1,8 @@
 import { Text, TouchableOpacity } from "react-native";
 import React from "react";
-import { primaryStyles } from "@/styles/primary";
 import { Button } from "react-native-paper";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "../../constants/Colors";
+import { primaryStyles } from "../../styles/primary";
 
 export default function PrimaryButton({ children, style, labelStyle, ...props }) {
   return (

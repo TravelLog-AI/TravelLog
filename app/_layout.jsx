@@ -1,6 +1,6 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import theme from "./../theme/theme";
+import theme from "../theme/theme";
 import { Provider as PaperProvider } from "react-native-paper";
 import { RootSiblingParent } from "react-native-root-siblings";
 import Toast from "react-native-toast-message";

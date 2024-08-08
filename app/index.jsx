@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import LandingScreen from './../components/LandingScreen';
+import LandingScreen from '../components/LandingScreen';
 
 export default function Index() {
   return (
