@@ -45,12 +45,12 @@ export default function Credentials() {
       showToast("success", "Create Account Successfully", "");
       // Wait for user to see the notification
       setTimeout(() => {
-        router.push({
+        router.replace({
           pathname: "auth/create-account/name",
           params: { userDocId: userDoc.id },
         });
+        setIsLoading(false);
       }, 1000);
-      setIsLoading(false);
     } catch (error) {
       console.log("Something went wrong: ", error);
       if (error.code === ERROR_TYPE.EMAIL_ALREADY_IN_USE) {

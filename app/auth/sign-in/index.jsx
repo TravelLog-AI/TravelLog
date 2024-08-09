@@ -92,13 +92,12 @@ export default function SignIn() {
       }
 
       showToast("success", "Success", "Login Successfully");
-      
+
       // Navigate to home screen
       setTimeout(() => {
-        router.push('(tabs)/mytrip');
-      }, 1000);
-
-      setIsLoading(false);
+        router.replace('(tabs)/home');
+        setIsLoading(false);
+      }, 500);
     } catch (error) {
       console.log("Something Went Wrong", error.code, error.message);
       if (error.code === "auth/invalid-credential") {
