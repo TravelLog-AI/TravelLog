@@ -14,7 +14,7 @@ export default function CreateModal({ open, onClose }) {
 
   return (
     <View>
-      <Modal isVisible={open} style={createStyles.container}>
+      <Modal keyboardShouldPersistTaps="always" isVisible={open} style={[createStyles.container, {zIndex: 0}]}>
         <View
           style={{
             display: "flex",

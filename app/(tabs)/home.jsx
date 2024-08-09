@@ -12,7 +12,7 @@ export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   return (
-    <ScrollView contentContainerStyle={tabsStyles.screenContainer}>
+    <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={tabsStyles.screenContainer}>
       <CreateModal open={isCreateOpen} onClose={() => setIsCreateOpen(false)}/>
       <TouchableOpacity
         style={tabsStyles.createTripButton}

@@ -23,7 +23,7 @@ export default function CreateTrip() {
   const [numberOfTravelers, setNumberOfTravelers] = useState(1);
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps="always">
       <SelectDate
         open={isSelectDateOpen}
         onClose={() => setIsSelectDateOpen(false)}
