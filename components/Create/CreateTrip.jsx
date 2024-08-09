@@ -12,6 +12,7 @@ import SelectDate from "../Modals/Create/SelectDate";
 import AutocompleteInput from "react-native-autocomplete-input";
 import PrimaryButton from "../Primary/Button";
 import SelectTravelers from "../Modals/Create/SelectTravelers";
+import { createStyles } from "./styles";
 
 export default function CreateTrip() {
   const [address, setAddress] = useState();
@@ -34,15 +35,15 @@ export default function CreateTrip() {
         onClose={() => setIsSelectPlaceOpen(false)}
         setAddress={setAddress}
       />
-      <Text style={[primaryStyles.heading, styles.heading]}>
+      <Text style={[primaryStyles.heading, createStyles.heading]}>
         Let's Plan Your New Trip ✍🏻
       </Text>
-      <Text style={[primaryStyles.subtitle, styles.subtitle]}>
+      <Text style={[primaryStyles.subtitle, createStyles.subtitle]}>
         Create Your New Trip Effortlessly With The Power Of AI
       </Text>
 
       {/* Destination */}
-      <Text style={[primaryStyles.heading, styles.sectionHeading]}>
+      <Text style={[primaryStyles.heading, createStyles.sectionHeading]}>
         Destination 🗺️
       </Text>
       <TextInput
@@ -60,7 +61,7 @@ export default function CreateTrip() {
       />
 
       {/* When */}
-      <Text style={[primaryStyles.heading, styles.sectionHeading]}>
+      <Text style={[primaryStyles.heading, createStyles.sectionHeading]}>
         When 📅
       </Text>
       <View
@@ -108,7 +109,7 @@ export default function CreateTrip() {
       </View>
 
       {/* Number of Travelers */}
-      <Text style={[primaryStyles.heading, styles.sectionHeading]}>
+      <Text style={[primaryStyles.heading, createStyles.sectionHeading]}>
         Number of Travelers 🧳
       </Text>
       <SelectTravelers numberOfTravelers={numberOfTravelers} setNumberOfTravelers={setNumberOfTravelers} />
@@ -124,21 +125,21 @@ export default function CreateTrip() {
   );
 }
 
-const styles = StyleSheet.create({
-  heading: {
-    color: Colors.BLACK,
-    textAlign: "left",
-    fontSize: 25,
-  },
-  subtitle: {
-    color: Colors.DARK_GREY,
-    textAlign: "left",
-    fontSize: 15,
-  },
-  sectionHeading: {
-    color: Colors.BLACK,
-    textAlign: "left",
-    fontSize: 20,
-    marginTop: 30,
-  },
-});
+// const styles = StyleSheet.create({
+//   heading: {
+//     color: Colors.BLACK,
+//     textAlign: "left",
+//     fontSize: 25,
+//   },
+//   subtitle: {
+//     color: Colors.DARK_GREY,
+//     textAlign: "left",
+//     fontSize: 15,
+//   },
+//   sectionHeading: {
+//     color: Colors.BLACK,
+//     textAlign: "left",
+//     fontSize: 20,
+//     marginTop: 30,
+//   },
+// });

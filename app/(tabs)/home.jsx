@@ -1,16 +1,12 @@
 import {
-  View,
-  Text,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import { tabsStyles } from "./styles";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import CreateModal from "../../components/Modals/Create/Create";
 import { Colors } from "../../constants/Colors";
-import { Dialog, Modal, Portal } from "react-native-paper";
 
 export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);

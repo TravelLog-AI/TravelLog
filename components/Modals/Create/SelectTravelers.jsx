@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { Chip } from "react-native-paper";
+import { Colors } from "../../../constants/Colors";
 
 export default function SelectTravelers({
   numberOfTravelers,
