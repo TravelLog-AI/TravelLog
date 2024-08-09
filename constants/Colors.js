@@ -13,5 +13,6 @@ export const Colors = {
   PRIMARY_BACKGROUND: '#E9EFFF',
   WHITE: '#FFFFFF',
   BLACK: '#000000',
-  GREY: '#E0E0E0'
+  GREY: '#E0E0E0',
+  DARK_GREY: 'grey'
 };

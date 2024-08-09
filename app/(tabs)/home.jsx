@@ -8,7 +8,7 @@ import {
 import React, { useState } from "react";
 import { tabsStyles } from "./styles";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import CreateModal, { createStyles } from "../../components/Modals/Create";
+import CreateModal from "../../components/Modals/Create/Create";
 import { Colors } from "../../constants/Colors";
 import { Dialog, Modal, Portal } from "react-native-paper";
 

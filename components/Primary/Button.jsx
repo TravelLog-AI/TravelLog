@@ -23,7 +23,7 @@
 //   );
 // }
 import React from "react";
-import { Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Text, TouchableOpacity, ActivityIndicator, View } from "react-native";
 import { Colors } from "../../constants/Colors";
 import { primaryStyles } from "../../styles/primary";
 
@@ -34,6 +34,7 @@ export default function PrimaryButton({
   loading = false, // Add a loading prop
   accessibilityLabel = "Button",
   variant = "contained", // Default variant prop
+  badgeContent = null,
   ...props
 }) {
   return (
@@ -62,6 +63,29 @@ export default function PrimaryButton({
           {children}
         </Text>
       )}
+
+      {
+        badgeContent && (
+          <View
+            style={{
+              position: 'absolute',
+              top: -15,
+              right: -5,
+              backgroundColor: Colors.SECONDARY,
+              borderRadius: 10,
+              paddingHorizontal: 5,
+              paddingVertical: 5,
+              zIndex: 1,
+            }}
+          >
+            <Text
+              style={{color: Colors.WHITE, fontSize: 12, fontWeight: 'bold'}}
+            >
+              {badgeContent}
+            </Text>
+          </View>
+        )
+      }
     </TouchableOpacity>
   );
 }
