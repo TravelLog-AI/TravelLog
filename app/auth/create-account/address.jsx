@@ -27,8 +27,6 @@ export default function Address() {
     }
   };
 
-  console.log(process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY);
-
   return (
     <View style={createAccountStyles.screenContainer}>
       <View style={createAccountStyles.headingContainer}>
@@ -44,7 +42,6 @@ export default function Address() {
         placeholder="Search Place..."
         fetchDetails
         onPress={async (data, details = null) => {
-          // console.log({ data, details });
           await handleUpdateUserAddress({
             name: data.description,
             coordinates: details.geometry.location,

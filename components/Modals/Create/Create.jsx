@@ -14,7 +14,11 @@ export default function CreateModal({ open, onClose }) {
 
   return (
     <View>
-      <Modal keyboardShouldPersistTaps="always" isVisible={open} style={[createStyles.container, {zIndex: 0}]}>
+      <Modal
+        keyboardShouldPersistTaps="always"
+        isVisible={open}
+        style={[createStyles.container, { zIndex: 0 }]}
+      >
         <View
           style={{
             display: "flex",
@@ -33,11 +37,12 @@ export default function CreateModal({ open, onClose }) {
 
         {/* Tabs */}
         <CreateTabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
-        {
-          currentTab === TABS.TRIP ? <CreateTrip /> : <CreateBlog />
-        }
+        {currentTab === TABS.TRIP ? (
+          <CreateTrip onClose={onClose} />
+        ) : (
+          <CreateBlog />
+        )}
       </Modal>
     </View>
   );
 }
-

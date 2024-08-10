@@ -1,26 +1,48 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import React, { useState } from "react";
+import { View, Text, ScrollView } from "react-native";
+import React, { useContext, useState } from "react";
 import { primaryStyles } from "../../styles/primary";
 import { Colors } from "../../constants/Colors";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import SelectPlace from "../Modals/Create/SelectPlace";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Chip, TextInput } from "react-native-paper";
-import CalendarPicker from "react-native-calendar-picker";
+import { TextInput } from "react-native-paper";
 import moment from "moment";
 import SelectDate from "../Modals/Create/SelectDate";
-import AutocompleteInput from "react-native-autocomplete-input";
 import PrimaryButton from "../Primary/Button";
 import SelectTravelers from "../Modals/Create/SelectTravelers";
 import { createStyles } from "./styles";
+import SelectBudget from "../Modals/Create/SelectBudget";
+import { useRouter } from "expo-router";
+import { showToast } from "../../utils/toast";
+import { CreateTripContext } from "../../context/CreateTripContext";
 
-export default function CreateTrip() {
+export default function CreateTrip({ onClose }) {
   const [address, setAddress] = useState();
   const [isSelectPlaceOpen, setIsSelectPlaceOpen] = useState(false);
   const [isSelectDateOpen, setIsSelectDateOpen] = useState(false);
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [numberOfTravelers, setNumberOfTravelers] = useState(1);
+  const [selectedBudget, setSelectedBudget] = useState("Cheap");
+
+  const router = useRouter();
+  const  { setTripData} = useContext(CreateTripContext);
+
+  const moveToGenerateAIPage = () => {
+    if (!address || !startDate || !endDate) {
+      showToast("error", "Please fill out all information needed", "");
+      return;
+    }
+
+    setTripData({
+      address,
+      startDate,
+      endDate,
+      numberOfTravelers,
+      selectedBudget
+    });
+    router.push('generateAITrip/');
+    onClose();
+  };
 
   return (
     <ScrollView keyboardShouldPersistTaps="always">
@@ -112,34 +134,43 @@ export default function CreateTrip() {
       <Text style={[primaryStyles.heading, createStyles.sectionHeading]}>
         Number of Travelers 🧳
       </Text>
-      <SelectTravelers numberOfTravelers={numberOfTravelers} setNumberOfTravelers={setNumberOfTravelers} />
+      <SelectTravelers
+        numberOfTravelers={numberOfTravelers}
+        setNumberOfTravelers={setNumberOfTravelers}
+      />
+
+      {/* Budget */}
+      <Text style={[primaryStyles.heading, createStyles.sectionHeading]}>
+        Your Budget 💲
+      </Text>
+      <SelectBudget
+        selectedBudget={selectedBudget}
+        setSelectedBudget={setSelectedBudget}
+      />
 
       {/* Buttons Group */}
-      <View display="flex" flexDirection="row" justifyContent="space-around" marginTop={30}>
-        <PrimaryButton style={{ width: "49%", padding: 10 }} variant="outlined">
+      <View
+        display="flex"
+        flexDirection="row"
+        justifyContent="space-around"
+        marginTop={30}
+      >
+        <PrimaryButton
+          style={{ width: "49%", padding: 10 }}
+          variant="outlined"
+          disabled={!address || !startDate || !endDate}
+        >
           Create Trip
         </PrimaryButton>
-        <PrimaryButton style={{ width: "49%", padding: 10 }} badgeContent="AI Powered 🤖">Generate Trip</PrimaryButton>
+        <PrimaryButton
+          onPress={moveToGenerateAIPage}
+          style={{ width: "49%", padding: 10 }}
+          badgeContent="AI Powered 🤖"
+          disabled={!address || !startDate || !endDate}
+        >
+          Generate Trip
+        </PrimaryButton>
       </View>
     </ScrollView>
   );
 }
-
-// const styles = StyleSheet.create({
-//   heading: {
-//     color: Colors.BLACK,
-//     textAlign: "left",
-//     fontSize: 25,
-//   },
-//   subtitle: {
-//     color: Colors.DARK_GREY,
-//     textAlign: "left",
-//     fontSize: 15,
-//   },
-//   sectionHeading: {
-//     color: Colors.BLACK,
-//     textAlign: "left",
-//     fontSize: 20,
-//     marginTop: 30,
-//   },
-// });

@@ -4,6 +4,8 @@ import theme from "../theme/theme";
 import { Provider as PaperProvider } from "react-native-paper";
 import { RootSiblingParent } from "react-native-root-siblings";
 import Toast from "react-native-toast-message";
+import UserProvider from "../context/UserContext";
+import CreateTripProvider from "../context/CreateTripContext";
 
 export default function RootLayout() {
   useFonts({
@@ -15,13 +17,17 @@ export default function RootLayout() {
   });
   return (
     <RootSiblingParent>
-      <PaperProvider theme={theme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-        <Toast />
-      </PaperProvider>
+      <UserProvider>
+        <CreateTripProvider>
+          <PaperProvider theme={theme}>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="(tabs)" />
+            </Stack>
+            <Toast />
+          </PaperProvider>
+        </CreateTripProvider>
+      </UserProvider>
     </RootSiblingParent>
   );
 }
