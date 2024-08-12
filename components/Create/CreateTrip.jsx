@@ -40,7 +40,13 @@ export default function CreateTrip({ onClose }) {
       numberOfTravelers,
       selectedBudget
     });
-    router.push('generateAITrip/');
+    router.push({pathname: 'generateAITrip/', params: {tripData: {
+      address,
+      startDate,
+      endDate,
+      numberOfTravelers,
+      selectedBudget
+    }}});
     onClose();
   };
 

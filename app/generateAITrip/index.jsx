@@ -1,5 +1,5 @@
-import { View, Text, Image, Animated } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import { View, Text, Image, Animated, InteractionManager  } from "react-native";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { addDoc, collection } from "firebase/firestore";
 import { UserContext } from "../../context/UserContext";
@@ -8,29 +8,26 @@ import { Colors } from "../../constants/Colors";
 import { AI_PROMPT } from "../../constants/AI";
 import { chatSession } from "../../config/AIModal";
 import { CreateTripContext } from "../../context/CreateTripContext";
+import { showToast } from "../../utils/toast";
 
 export default function GeneratingAITrip() {
+  const { tripData } = useLocalSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
   const { userData } = useContext(UserContext);
-  const { tripData } = useContext(CreateTripContext);
+  // const { tripData } = useContext(CreateTripContext);
   const router = useRouter();
 
   // Animated
-  const animatedValues = "Please Wait..."
-    .split("")
-    .map(() => new Animated.Value(0)); // Create an animated value for each character
+  const animatedValues = useRef("Please Wait...".split("").map(() => new Animated.Value(0))).current;
 
   // Collections
   const tripsCollection = collection(db, "Trips");
 
-    useEffect(() => {
-      if (tripData) {
+  useEffect(() => {
+    if (tripData) {
         generateAiTrip();
       }
-    }, []);
-
-  useEffect(() => {
     // Animate each character sequentially
     const animations = animatedValues.map((animatedValue, index) => {
       return Animated.sequence([
@@ -56,36 +53,41 @@ export default function GeneratingAITrip() {
   }, []);
 
   const generateAiTrip = async () => {
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-    const FINAL_PROMPT = AI_PROMPT.replace(
-      "{departureLocation}",
-      userData?.address?.name
-    )
-      .replace("{arrivalLocation}", tripData.address.name)
-      .replace("{startDate}", tripData.startDate)
-      .replace("{endDate}", tripData.endDate)
-      .replace("{numberOfTravelers}", tripData.numberOfTravelers)
-      .replace("{budget}", tripData.selectedBudget)
-      .replace("{startDate}", tripData.startDate)
-      .replace("{endDate}", tripData.endDate);
-
-    // Generate AI Trip
-    const result = await chatSession.sendMessage(FINAL_PROMPT);
-
-    const tripRes = JSON.parse(result.response.text());
-    const createdAt = new Date();
-
-    // Add trip to DB
-    await addDoc(tripsCollection, {
-      userDocId: userData.docId,
-      tripData: tripRes, // AI Result
-      createdAt,
-    });
-
-    setIsLoading(false);
-
-    router.push("/(tabs)/home");
+      const FINAL_PROMPT = AI_PROMPT.replace(
+        "{departureLocation}",
+        userData?.address?.name
+      )
+        .replace("{arrivalLocation}", tripData.address.name)
+        .replace("{startDate}", tripData.startDate)
+        .replace("{endDate}", tripData.endDate)
+        .replace("{numberOfTravelers}", tripData.numberOfTravelers)
+        .replace("{budget}", tripData.selectedBudget)
+        .replace("{startDate}", tripData.startDate)
+        .replace("{endDate}", tripData.endDate);
+  
+      // Generate AI Trip
+      const result = await chatSession.sendMessage(FINAL_PROMPT);
+  
+      const tripRes = JSON.parse(result.response.text());
+      const createdAt = new Date();
+  
+      // Add trip to DB
+      await addDoc(tripsCollection, {
+        userDocId: userData.docId,
+        tripData: tripRes, // AI Result
+        createdAt,
+      });
+  
+      setIsLoading(false);
+  
+      router.push("/(tabs)/home");
+    } catch (error) {
+      console.log('Something Went Wrong: ', error);
+      showToast('error', 'Something Went Wrong', error);
+    }
   };
 
   return (
