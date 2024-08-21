@@ -136,6 +136,7 @@ export default function Credentials() {
         <PrimaryButton
           mode="contained"
           style={{ backgroundColor: Colors.SECONDARY }}
+          onPress={() => router.push('/auth/sign-in')}
         >
           Sign In
         </PrimaryButton>
