@@ -11,7 +11,7 @@ export const createStyles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     width: "100%",
-    height: "80vh",
+    height: "80%",
     margin: 0,
   },
   tabContainer: {

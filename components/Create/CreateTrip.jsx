@@ -1,5 +1,5 @@
 import { View, Text, ScrollView } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { primaryStyles } from "../../styles/primary";
 import { Colors } from "../../constants/Colors";
 import SelectPlace from "../Modals/Create/SelectPlace";
@@ -13,13 +13,13 @@ import { createStyles } from "./styles";
 import SelectBudget from "../Modals/Create/SelectBudget";
 import { useRouter } from "expo-router";
 import { showToast } from "../../utils/toast";
-import { CreateTripContext } from "../../context/CreateTripContext";
 import { AI_PROMPT } from "../../constants/AI";
 import { chatSession } from "../../config/AIModal";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../config/firebase.config";
 import { UserContext } from "../../context/UserContext";
 import GeneratingAIScreen from "./GeneratingAIScreen";
+import { GetPhotoRef } from "../../utils/googleMap";
 
 export default function CreateTrip({ onClose }) {
   const [address, setAddress] = useState();
@@ -39,40 +39,12 @@ export default function CreateTrip({ onClose }) {
 
   const tripsCollection = collection(db, "Trips");
 
-  // useEffect(() => {
-  //   if (tripData) {
-  //     console.log(tripData, "trip data in creating trip");
-  //     setIsOpenGeneratingAI(true);
-  //   }
-  // }, [tripData]);
-
-  // const moveToGenerateAIPage = () => {
-  //   if (!address || !startDate || !endDate) {
-  //     showToast("error", "Please fill out all information needed", "");
-  //     return;
-  //   }
-
-  //   setTripData({
-  //     address,
-  //     startDate,
-  //     endDate,
-  //     numberOfTravelers,
-  //     selectedBudget,
-  //   });
-
-  //   // Ensure the modal opens after the tripData has been set
-  //   setTimeout(() => {
-  //     setIsOpenGeneratingAI(true);
-  //   }, 0);
-  // };
-
   const generateAiTrip = async () => {
     try {
       setIsOpenGeneratingAI(true);
       const parsedStartDate = new Date(startDate);
       const parsedEndDate = new Date(endDate);
       
-
       const FINAL_PROMPT = AI_PROMPT.replace(
         "{departureLocation}",
         userData?.address?.name
@@ -83,26 +55,32 @@ export default function CreateTrip({ onClose }) {
         .replace("{numberOfTravelers}", numberOfTravelers)
         .replace("{budget}", selectedBudget);
 
-      console.log(FINAL_PROMPT, 'final prompt');
       // Generate AI Trip
       const result = await chatSession.sendMessage(FINAL_PROMPT);
+      console.log({result});
 
       const tripRes = JSON.parse(result.response.text());
+      console.log({tripRes});
       const createdAt = new Date();
 
+      // Get photo ref to display it
+      const photoRef = await GetPhotoRef(address.name);
+
       // Add trip to DB
-      await addDoc(tripsCollection, {
+      const newTripDoc = await addDoc(tripsCollection, {
         userDocId: userData.docId,
         tripData: tripRes, // AI Result
         createdAt,
+        photoRef
       });
 
       setIsOpenGeneratingAI(false);
-
-      router.push("/(tabs)/home");
+      onClose();
+      router.push(`/trip/overview/${newTripDoc.id}`);
     } catch (error) {
       console.log("Something Went Wrong: ", error);
       showToast("error", "Something Went Wrong", error);
+      setIsOpenGeneratingAI(false);
     }
   };
 
@@ -224,7 +202,8 @@ export default function CreateTrip({ onClose }) {
         <PrimaryButton
           style={{ width: "49%", padding: 10 }}
           variant="outlined"
-          disabled={!address || !startDate || !endDate}
+          // disabled={!address || !startDate || !endDate}
+          onPress={() => router.push(`trip/overview/1`)}
         >
           Create Trip
         </PrimaryButton>
