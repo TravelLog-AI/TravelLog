@@ -28,7 +28,7 @@ export default function CreateModal({ open, onClose }) {
           }}
         >
           <PrimaryButton
-            onPress={onClose}
+            onPress={() => {onClose(); console.log('On Close')}}
             style={{ backgroundColor: Colors.WHITE, borderRadius: "50%" }}
           >
             <Entypo name="cross" size={40} color={Colors.GREY} />

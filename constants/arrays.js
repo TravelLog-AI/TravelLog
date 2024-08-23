@@ -1,3 +1,5 @@
+import { Entypo, FontAwesome6, Ionicons } from "@expo/vector-icons"
+
 export const numberOfPeople = [
     '1 person',
     '2 people',
@@ -11,3 +13,21 @@ export const numberOfPeople = [
     '10 people',
     'More than 10 people'
 ]
+
+export const tripDetailTabs = [
+    {
+        id: 1,
+        name: 'Overview',
+        getIcon: (color) => <FontAwesome6 name="list-alt" size={24} color={color} />,
+    },
+    {
+        id: 2,
+        name: 'Itinerary',
+        getIcon: (color) => <Entypo name="map" size={24} color={color} />,
+    },
+    {
+        id: 3,
+        name: 'Advisors',
+        getIcon: (color) => <Ionicons name="people" size={24} color={color} />,
+    },
+];

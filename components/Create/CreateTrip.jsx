@@ -202,8 +202,7 @@ export default function CreateTrip({ onClose }) {
         <PrimaryButton
           style={{ width: "49%", padding: 10 }}
           variant="outlined"
-          // disabled={!address || !startDate || !endDate}
-          onPress={() => router.push(`trip/overview/1`)}
+          onPress={() => {router.push(`trip/1`); onClose()}}
         >
           Create Trip
         </PrimaryButton>
