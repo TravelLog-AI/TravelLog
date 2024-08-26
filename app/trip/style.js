@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { primaryStyles } from "../../styles/primary";
 import { Colors } from "../../constants/Colors";
 
-export const tripOverviewStyle = StyleSheet.create({
+export const tripDetailsStyle = StyleSheet.create({
   tabButtonContainer: {
     position: "relative",
     left: 20,

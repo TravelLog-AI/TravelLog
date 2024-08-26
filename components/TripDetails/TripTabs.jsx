@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import PrimaryButton from "../Primary/Button";
 import { View } from "react-native";
-import { tripOverviewStyle } from "../../app/trip/style";
-import { Entypo, FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { tripDetailsStyle } from "../../app/trip/style";
 import { Colors } from "../../constants/Colors";
 import { tripDetailTabs } from "../../constants/arrays";
 
 export default function TripTabs({currentTab, setCurrentTab}) {
   // const [currentTab, setCurrentTab] = useState("Overview");
   return (
-    <View style={tripOverviewStyle.tabButtonContainer}>
+    <View style={tripDetailsStyle.tabButtonContainer}>
       {tripDetailTabs.map((tripTab, index) => {
         let icon;
         if (currentTab === tripTab.name) {

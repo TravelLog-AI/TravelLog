@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { tripOverviewStyle } from "../../app/trip/style";
+import { tripDetailsStyle } from "../../app/trip/style";
 import { Colors } from "../../constants/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
 import PrimaryButton from "../Primary/Button";
@@ -8,10 +8,10 @@ import PrimaryButton from "../Primary/Button";
 export default function TripOverview() {
   return (
     <>
-      <Text style={tripOverviewStyle.heading}>Overview</Text>
+      <Text style={tripDetailsStyle.heading}>Overview</Text>
       <Text
         style={[
-          tripOverviewStyle.heading,
+          tripDetailsStyle.heading,
           { color: Colors.BLACK, marginTop: 10 },
         ]}
       >
@@ -35,7 +35,7 @@ export default function TripOverview() {
           }}
         >
           <FontAwesome5 name="calendar-alt" size={10} color="grey" />
-          <Text style={tripOverviewStyle.subtitle}>
+          <Text style={tripDetailsStyle.subtitle}>
             20 Aug 2024 - 31 Aug 2024
           </Text>
         </View>
@@ -48,7 +48,7 @@ export default function TripOverview() {
           }}
         >
           <FontAwesome5 name="users" size={10} color="grey" />
-          <Text style={tripOverviewStyle.subtitle}>2 people</Text>
+          <Text style={tripDetailsStyle.subtitle}>2 people</Text>
         </View>
       </View>
 
@@ -65,20 +65,20 @@ export default function TripOverview() {
         }}
       >
         <PrimaryButton
-          labelStyle={tripOverviewStyle.subTabText}
-          style={tripOverviewStyle.subTab}
+          labelStyle={tripDetailsStyle.subTabText}
+          style={tripDetailsStyle.subTab}
         >
           Flight
         </PrimaryButton>
         <PrimaryButton
-          labelStyle={tripOverviewStyle.subTabText}
-          style={tripOverviewStyle.subTab}
+          labelStyle={tripDetailsStyle.subTabText}
+          style={tripDetailsStyle.subTab}
         >
           Lodging
         </PrimaryButton>
         <PrimaryButton
-          labelStyle={tripOverviewStyle.subTabText}
-          style={tripOverviewStyle.subTab}
+          labelStyle={tripDetailsStyle.subTabText}
+          style={tripDetailsStyle.subTab}
         >
           Landmarks
         </PrimaryButton>
