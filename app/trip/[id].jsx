@@ -1,15 +1,39 @@
 import { View, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Colors } from "../../constants/Colors";
 import TripTabs from "../../components/TripDetails/TripTabs";
 import TripOverview from "../../components/TripDetails/TripOverview";
 import { tripDetailTabs } from "../../constants/arrays";
 import TripItinerary from "../../components/TripDetails/TripItinerary";
 import TripAdvisor from "../../components/TripDetails/TripAdvisor";
+import { useLocalSearchParams } from "expo-router";
+import { showToast } from './../../utils/toast';
+import { doc, getDoc, query, where } from "firebase/firestore";
+import { db } from "../../config/firebase.config";
+import { fetchDoc } from "../../utils/db";
 
 export default function TripDetails() {
   const [currentSubTab, setCurrentSubTab] = useState("");
   const [currentTripTab, setCurrentTripTab] = useState("Overview");
+  const [tripData, setTripData] = useState();
+
+  const { id } = useLocalSearchParams();
+
+  useEffect(() => {
+    if (id) {
+      fetchTripData();
+    }
+  }, [id]);
+
+  const fetchTripData = async () => {
+    try {
+      const tripDoc = await fetchDoc('Trips', id);
+      setTripData(tripDoc.docData);
+    } catch (error) {
+      console.log('Something Went Wrong: ', error);
+      showToast('error', 'Something Went Wrong', error);
+    }
+  }
 
   return (
     <View style={{ height: "100%", backgroundColor: Colors.WHITE }}>
@@ -25,9 +49,9 @@ export default function TripDetails() {
 
       {/* Trip Tab */}
       {currentTripTab === tripDetailTabs[0].name ? (
-        <TripOverview />
+        <TripOverview tripData={tripData?.tripData?.trip || {}}/>
       ) : currentTripTab === tripDetailTabs[1].name ? (
-        <TripItinerary />
+        <TripItinerary itineraryData={tripData?.tripData?.trip.itinerary || []} />
       ) : (
         <TripAdvisor />
       )}

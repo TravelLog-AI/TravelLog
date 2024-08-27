@@ -5,7 +5,7 @@ import { Colors } from "../../constants/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
 import PrimaryButton from "../Primary/Button";
 
-export default function TripOverview() {
+export default function TripOverview({tripData}) {
   return (
     <>
       <Text style={tripDetailsStyle.heading}>Overview</Text>
@@ -15,7 +15,7 @@ export default function TripOverview() {
           { color: Colors.BLACK, marginTop: 10 },
         ]}
       >
-        Victoria, BC, Canada
+        {tripData.destination}
       </Text>
       <View
         style={{
@@ -36,7 +36,7 @@ export default function TripOverview() {
         >
           <FontAwesome5 name="calendar-alt" size={10} color="grey" />
           <Text style={tripDetailsStyle.subtitle}>
-            20 Aug 2024 - 31 Aug 2024
+            {tripData.start_date} - {tripData.end_date}
           </Text>
         </View>
         <View
@@ -48,7 +48,9 @@ export default function TripOverview() {
           }}
         >
           <FontAwesome5 name="users" size={10} color="grey" />
-          <Text style={tripDetailsStyle.subtitle}>2 people</Text>
+          <Text style={tripDetailsStyle.subtitle}>
+            {tripData.traveler_count} people
+          </Text>
         </View>
       </View>
 

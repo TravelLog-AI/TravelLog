@@ -4,23 +4,23 @@ import { Colors } from '../constants/Colors'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 
-export default function ItineraryCard() {
+export default function ItineraryCard({activity}) {
   return (
     <View
       style={{
         display: "flex",
         flexDirection: "row",
         padding: 20,
+        paddingRight: 30,
         alignItems: "center",
-        // alignContent: 'center',
-        backgroundColor: Colors.PRIMARY_BACKGROUND,
-        height: 150,
+        height: 200,
+        backgroundColor: Colors.LIGHT_BACKGROUND,
         borderRadius: 20,
       }}
     >
       <TimeLineComp />
       <View style={{ marginHorizontal: 20, gap: 10 }}>
-        <Text style={{fontFamily: 'open-sans-bold', fontSize: 20,}}>Visit national zoo Visit national zoo Visit national zoo Visit national zoo Visit national zoo</Text>
+        <Text style={{fontFamily: 'open-sans-bold', fontSize: 15,}}>{activity.details}</Text>
         <View
           style={{
             display: "flex",
@@ -29,15 +29,15 @@ export default function ItineraryCard() {
             alignItems: "center",
           }}
         >
-          <AntDesign name="clockcircle" size={15} color={Colors.DARK_GREY} />
+          <Entypo name="location" size={12} color={Colors.DARK_GREY} />
           <Text
             style={{
               fontFamily: "open-sans-medium",
-              fontSize: 15,
+              fontSize: 12,
               color: Colors.DARK_GREY,
             }}
           >
-            2:00pm
+            {activity.name}
           </Text>
         </View>
         <View
@@ -48,15 +48,34 @@ export default function ItineraryCard() {
             alignItems: "center",
           }}
         >
-          <Entypo name="location-pin" size={15} color={Colors.DARK_GREY} />
+          <AntDesign name="clockcircle" size={12} color={Colors.DARK_GREY} />
           <Text
             style={{
               fontFamily: "open-sans-medium",
-              fontSize: 15,
+              fontSize: 12,
               color: Colors.DARK_GREY,
             }}
           >
-            BC National Zoo
+            {activity.best_time_to_visit}
+          </Text>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 5,
+            alignItems: "center",
+          }}
+        >
+          <Entypo name="ticket" size={12} color={Colors.DARK_GREY} />
+          <Text
+            style={{
+              fontFamily: "open-sans-medium",
+              fontSize: 12,
+              color: Colors.DARK_GREY,
+            }}
+          >
+            {activity.ticket_pricing}
           </Text>
         </View>
       </View>
@@ -68,9 +87,9 @@ export default function ItineraryCard() {
 const TimeLineComp = () => {
     return (
         <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 5}}>
-            <View style={{backgroundColor: Colors.SECONDARY, width: 1, height: '35%'}}></View>
-            <View style={{backgroundColor: Colors.SECONDARY, width: 30, height: 30, borderRadius: 15}}></View>
-            <View style={{backgroundColor: Colors.SECONDARY, width: 1, height: '35%'}}></View>
+            <View style={{backgroundColor: Colors.PRIMARY, width: 1, height: '35%'}}></View>
+            <View style={{backgroundColor: Colors.PRIMARY, width: 30, height: 30, borderRadius: 15}}></View>
+            <View style={{backgroundColor: Colors.PRIMARY, width: 1, height: '35%'}}></View>
         </View>
     )
 }

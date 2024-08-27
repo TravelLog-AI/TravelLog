@@ -202,7 +202,7 @@ export default function CreateTrip({ onClose }) {
         <PrimaryButton
           style={{ width: "49%", padding: 10 }}
           variant="outlined"
-          onPress={() => {router.push(`trip/1`); onClose()}}
+          onPress={() => {router.push(`trip/bzuZlCsvG70tIZxBrHQb`); onClose()}}
         >
           Create Trip
         </PrimaryButton>
