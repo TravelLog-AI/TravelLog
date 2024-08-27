@@ -34,7 +34,6 @@ export default function CreateTrip({ onClose }) {
   const [selectedBudget, setSelectedBudget] = useState("Cheap");
 
   const router = useRouter();
-  // const { tripData, setTripData } = useContext(CreateTripContext);
   const { userData } = useContext(UserContext);
 
   const tripsCollection = collection(db, "Trips");
@@ -76,7 +75,7 @@ export default function CreateTrip({ onClose }) {
 
       setIsOpenGeneratingAI(false);
       onClose();
-      router.push(`/trip/overview/${newTripDoc.id}`);
+      router.push(`trip/${newTripDoc.id}`);
     } catch (error) {
       console.log("Something Went Wrong: ", error);
       showToast("error", "Something Went Wrong", error);
@@ -193,28 +192,28 @@ export default function CreateTrip({ onClose }) {
       />
 
       {/* Buttons Group */}
-      <View
+      {/* <View
         display="flex"
         flexDirection="row"
         justifyContent="space-around"
         marginTop={30}
-      >
-        <PrimaryButton
+      > */}
+        {/* <PrimaryButton
           style={{ width: "49%", padding: 10 }}
           variant="outlined"
           onPress={() => {router.push(`trip/bzuZlCsvG70tIZxBrHQb`); onClose()}}
         >
           Create Trip
-        </PrimaryButton>
+        </PrimaryButton> */}
         <PrimaryButton
           onPress={generateAiTrip}
-          style={{ width: "49%", padding: 10 }}
+          style={{ width: "100%", padding: 10, marginTop: 30 }}
           badgeContent="AI Powered 🤖"
           disabled={!address || !startDate || !endDate}
         >
           Generate Trip
         </PrimaryButton>
-      </View>
+      {/* </View> */}
     </ScrollView>
   );
 }

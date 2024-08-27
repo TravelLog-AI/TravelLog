@@ -1,4 +1,4 @@
-import { View, Image } from "react-native";
+import { View, Image, TouchableOpacity, SafeAreaView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Colors } from "../../constants/Colors";
 import TripTabs from "../../components/TripDetails/TripTabs";
@@ -6,16 +6,17 @@ import TripOverview from "../../components/TripDetails/TripOverview";
 import { tripDetailTabs } from "../../constants/arrays";
 import TripItinerary from "../../components/TripDetails/TripItinerary";
 import TripAdvisor from "../../components/TripDetails/TripAdvisor";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { showToast } from './../../utils/toast';
-import { doc, getDoc, query, where } from "firebase/firestore";
-import { db } from "../../config/firebase.config";
 import { fetchDoc } from "../../utils/db";
+import Feather from "@expo/vector-icons/Feather";
 
 export default function TripDetails() {
-  const [currentSubTab, setCurrentSubTab] = useState("");
+  // const [currentSubTab, setCurrentSubTab] = useState("");
   const [currentTripTab, setCurrentTripTab] = useState("Overview");
   const [tripData, setTripData] = useState();
+
+  const router = useRouter();
 
   const { id } = useLocalSearchParams();
 
@@ -39,19 +40,30 @@ export default function TripDetails() {
     <View style={{ height: "100%", backgroundColor: Colors.WHITE }}>
       <Image
         source={{
-          uri: "https://images.unsplash.com/photo-1709999370305-cf9b7c368cd2?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${
+            tripData?.photoRef || ""
+          }&key=${process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY}`,
         }}
         style={{ width: "100%", height: "40%" }}
       />
+      <SafeAreaView
+        style={{ position: "absolute", top: 0, left: 0, margin: 30 }}
+      >
+        <TouchableOpacity onPress={() => router.push("(tabs)/home")}>
+          <Feather name="home" size={24} color={Colors.PRIMARY} />
+        </TouchableOpacity>
+      </SafeAreaView>
 
       {/* Tab Buttons */}
       <TripTabs currentTab={currentTripTab} setCurrentTab={setCurrentTripTab} />
 
       {/* Trip Tab */}
       {currentTripTab === tripDetailTabs[0].name ? (
-        <TripOverview tripData={tripData?.tripData?.trip || {}}/>
+        <TripOverview tripData={tripData?.tripData?.trip || {}} />
       ) : currentTripTab === tripDetailTabs[1].name ? (
-        <TripItinerary itineraryData={tripData?.tripData?.trip.itinerary || []} />
+        <TripItinerary
+          itineraryData={tripData?.tripData?.trip.itinerary || []}
+        />
       ) : (
         <TripAdvisor />
       )}

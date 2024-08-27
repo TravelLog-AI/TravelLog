@@ -73,9 +73,9 @@ export default function TripItinerary({itineraryData}) {
         <ItineraryCard />
         <ItineraryCard /> */}
         {
-          dayActivities.length > 0 && dayActivities.map((activity) => {
+          dayActivities.length > 0 && dayActivities.map((activity, index) => {
             return (
-              <ItineraryCard activity={activity} />
+              <ItineraryCard key={index} activity={activity} />
             )
           })
         }
