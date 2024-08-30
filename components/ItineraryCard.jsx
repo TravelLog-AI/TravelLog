@@ -13,7 +13,8 @@ export default function ItineraryCard({activity}) {
         padding: 20,
         paddingRight: 30,
         alignItems: "center",
-        height: 200,
+        maxHeight: 300,
+        flexShrink: 1,
         backgroundColor: Colors.LIGHT_BACKGROUND,
         borderRadius: 20,
       }}

@@ -49,7 +49,7 @@ export default function TripDetails() {
       <SafeAreaView
         style={{ position: "absolute", top: 0, left: 0, margin: 30 }}
       >
-        <TouchableOpacity onPress={() => router.push("(tabs)/home")}>
+        <TouchableOpacity onPress={() => router.back()}>
           <Feather name="home" size={24} color={Colors.PRIMARY} />
         </TouchableOpacity>
       </SafeAreaView>
