@@ -6,19 +6,17 @@ import { Colors } from "../../../constants/Colors";
 import { Entypo } from "@expo/vector-icons";
 import PrimaryButton from "../../Primary/Button";
 import { createStyles } from "../../Create/styles";
+import { modalStyles } from "../styles";
 
 export default function SelectPlace({ open, onClose, setAddress }) {
   return (
     <View>
-      <Modal keyboardShouldPersistTaps="always" isVisible={open} style={[createStyles.container]}>
-        <View
-          style={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-          }}
-        >
+      <Modal
+        keyboardShouldPersistTaps="always"
+        isVisible={open}
+        style={[createStyles.container]}
+      >
+        <View style={modalStyles.closeButtonContainer}>
           <PrimaryButton
             onPress={onClose}
             style={{ backgroundColor: Colors.WHITE, borderRadius: "50%" }}
@@ -26,9 +24,9 @@ export default function SelectPlace({ open, onClose, setAddress }) {
             <Entypo name="cross" size={40} color={Colors.GREY} />
           </PrimaryButton>
         </View>
-        <View style={{height: '100%', zIndex: 2100}}>
+        <View style={{ height: "100%", zIndex: 2100 }}>
           <GooglePlacesAutocomplete
-          keyboardShouldPersistTaps = {'always'}
+            keyboardShouldPersistTaps={"always"}
             placeholder="Enter city"
             fetchDetails
             query={{
@@ -40,7 +38,7 @@ export default function SelectPlace({ open, onClose, setAddress }) {
               textInputContainer: {
                 backgroundColor: "grey",
                 borderWidth: 1,
-                zIndex: 100
+                zIndex: 100,
               },
               textInput: {
                 height: 38,

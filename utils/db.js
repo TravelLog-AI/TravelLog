@@ -1,5 +1,6 @@
-import { collection, doc, getDoc, getDocs, query } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase.config';
+import { showToast } from './toast';
 
 export const fetchData = async (collectionName, condition) => {
   const result = [];
@@ -23,6 +24,7 @@ export const fetchData = async (collectionName, condition) => {
     return result;
   } catch (error) {
     console.log('Fail to fetch data: ', error);
+    showToast('error', 'Fail to fetch data', error);
   }
 };
 
@@ -35,5 +37,15 @@ export const fetchDoc = async (collectionName, docId) => {
     return { docRef, docSnapshot, docData };
   } catch (error) {
     console.log('Fail to get doc: ', error);
+    showToast('error', 'Fail to get doc', error);
   }
 };
+
+export const updateSingleDoc = async (collectionName, docId, updatedData) => {
+  try {
+    await updateDoc(doc(db, collectionName, docId), updatedData);
+  } catch (error) {
+    console.log('Fail to update single doc: ', error);
+    showToast('error','Fail to update single doc', error)
+  } 
+}

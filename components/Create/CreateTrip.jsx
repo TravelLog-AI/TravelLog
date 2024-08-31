@@ -25,12 +25,12 @@ export default function CreateTrip({ onClose }) {
   const [address, setAddress] = useState();
   const [isSelectPlaceOpen, setIsSelectPlaceOpen] = useState(false);
   const [isSelectDateOpen, setIsSelectDateOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [isOpenGeneratingAI, setIsOpenGeneratingAI] = useState(false);
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [numberOfTravelers, setNumberOfTravelers] = useState(1);
-  const [tripData, setTripData] = useState(null);
+  // const [tripData, setTripData] = useState(null);
   const [selectedBudget, setSelectedBudget] = useState("Cheap");
 
   const router = useRouter();
@@ -116,7 +116,11 @@ export default function CreateTrip({ onClose }) {
         left={
           <TextInput.Icon
             icon={() => (
-              <FontAwesome6 name="map-location-dot" size={20} color="black" />
+              <FontAwesome6
+                name="map-location-dot"
+                size={15}
+                color={Colors.DARK_GREY}
+              />
             )}
           />
         }
@@ -142,7 +146,11 @@ export default function CreateTrip({ onClose }) {
           left={
             <TextInput.Icon
               icon={() => (
-                <FontAwesome6 name="calendar-days" size={20} color="black" />
+                <FontAwesome6
+                  name="calendar-days"
+                  size={15}
+                  color={Colors.DARK_GREY}
+                />
               )}
             />
           }
@@ -159,7 +167,11 @@ export default function CreateTrip({ onClose }) {
           left={
             <TextInput.Icon
               icon={() => (
-                <FontAwesome6 name="calendar-days" size={20} color="black" />
+                <FontAwesome6
+                  name="calendar-days"
+                  size={15}
+                  color={Colors.DARK_GREY}
+                />
               )}
             />
           }
@@ -191,29 +203,14 @@ export default function CreateTrip({ onClose }) {
         setSelectedBudget={setSelectedBudget}
       />
 
-      {/* Buttons Group */}
-      {/* <View
-        display="flex"
-        flexDirection="row"
-        justifyContent="space-around"
-        marginTop={30}
-      > */}
-        {/* <PrimaryButton
-          style={{ width: "49%", padding: 10 }}
-          variant="outlined"
-          onPress={() => {router.push(`trip/bzuZlCsvG70tIZxBrHQb`); onClose()}}
-        >
-          Create Trip
-        </PrimaryButton> */}
-        <PrimaryButton
-          onPress={generateAiTrip}
-          style={{ width: "100%", padding: 10, marginTop: 30 }}
-          badgeContent="AI Powered 🤖"
-          disabled={!address || !startDate || !endDate}
-        >
-          Generate Trip
-        </PrimaryButton>
-      {/* </View> */}
+      <PrimaryButton
+        onPress={generateAiTrip}
+        style={{ width: "100%", padding: 10, marginTop: 30 }}
+        badgeContent="AI Powered 🤖"
+        disabled={!address || !startDate || !endDate}
+      >
+        Generate Trip
+      </PrimaryButton>
     </ScrollView>
   );
 }

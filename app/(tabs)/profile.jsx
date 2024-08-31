@@ -13,9 +13,11 @@ import { showToast } from "../../utils/toast";
 import { fetchData } from "../../utils/db";
 import { where } from "firebase/firestore";
 import { UserContext } from "../../context/UserContext";
+import EditProfile from "../../components/Modals/EditProfile";
 
 export default function Profile() {
   const [currentTab, setCurrentTab] = useState(profileTabs[0].id);
+  const [isOpenEditProfile, setIsOpenEditProfile] = useState(false);
   const [userTrips, setUserTrips] = useState([]);
 
   const { userData } = useContext(UserContext);
@@ -42,6 +44,7 @@ export default function Profile() {
 
   return (
     <ScrollView style={{ backgroundColor: Colors.LIGHT_BACKGROUND }}>
+      <EditProfile open={isOpenEditProfile} onClose={() => setIsOpenEditProfile(false)} />
       <SafeAreaView
         style={{
           dipslay: "flex",
@@ -64,6 +67,7 @@ export default function Profile() {
         <PrimaryButton
           labelStyle={{ fontSize: 15 }}
           style={{ padding: 10, borderRadius: 10 }}
+          onPress={() => setIsOpenEditProfile(true)}
         >
           Edit Profile
         </PrimaryButton>

@@ -6,5 +6,9 @@ export const showToast = (type, title, text) => {
     text1: title,
     text2: text,
     position: "top",
+    visibilityTime: 4000,
+    autoHide: true,
+    topOffset: 30,
+    bottomOffset: 40,
   });
 };

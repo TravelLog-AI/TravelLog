@@ -7,6 +7,7 @@ import { createStyles } from "../../Create/styles";
 import PrimaryButton from "../../Primary/Button";
 import { Entypo } from "@expo/vector-icons";
 import moment from "moment";
+import { modalStyles } from "../styles";
 
 export default function SelectDate({
   open,
@@ -28,12 +29,7 @@ export default function SelectDate({
     <View>
       <Modal isVisible={open} style={createStyles.container}>
         <View
-          style={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-          }}
+          style={modalStyles.closeButtonContainer}
         >
           <PrimaryButton
             onPress={onClose}
