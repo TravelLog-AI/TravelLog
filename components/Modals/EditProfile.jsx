@@ -75,7 +75,6 @@ export default function EditProfile({
       }
     }
 
-    console.log(userData, 'userData');
   return (
     <View>
       <Modal isVisible={open} style={[modalStyles.container, {zIndex: 1}]}>
@@ -116,7 +115,7 @@ export default function EditProfile({
             marginVertical: 10,
           }}
         >
-          <Avatar.Text size={100} label={user?.name.slice(0,2) || ''} />
+          <Avatar.Text size={100} label={user?.name?.slice(0,2) || ''} />
         </View>
 
         {/* Inputs Group */}
