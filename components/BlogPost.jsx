@@ -6,7 +6,7 @@ import { Colors } from '../constants/Colors'
 export default function BlogPost() {
   return (
     <View style={{ flexDirection: "row", gap: 10 }}>
-      <Avatar.Text size={30} label="BM" />
+      <Avatar.Text size={30} label="B" />
 
       <View>
         {/* User & Post Info */}

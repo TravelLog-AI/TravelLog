@@ -115,7 +115,7 @@ export default function EditProfile({
             marginVertical: 10,
           }}
         >
-          <Avatar.Text size={100} label={user?.name?.slice(0,2) || ''} />
+          <Avatar.Text size={100} label={user?.name?.slice(0,1) || ''} />
         </View>
 
         {/* Inputs Group */}

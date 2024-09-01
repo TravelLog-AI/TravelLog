@@ -54,7 +54,7 @@ export default function Profile() {
           backgroundColor: Colors.WHITE,
         }}
       >
-        <Avatar.Text size={100} label={userData.name.slice(0,2)} />
+        <Avatar.Text size={100} label={userData.name.slice(0,1)} />
         <Text
           style={{
             fontFamily: "open-sans-bold",

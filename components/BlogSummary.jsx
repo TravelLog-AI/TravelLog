@@ -25,7 +25,7 @@ export default function BlogSummary() {
         I have lived in the Seattle area for my entire life! This guyide does...
       </Text>
       <View style={{ flexDirection: "row", gap: 10, marginVertical: 10, }}>
-        <Avatar.Text size={20} label={"Bi"} />
+        <Avatar.Text size={20} label={"B"} />
         <Text style={{ fontFamily: "open-sans", color: Colors.DARK_GREY }}>
           Bin Mai · 53 views
         </Text>
