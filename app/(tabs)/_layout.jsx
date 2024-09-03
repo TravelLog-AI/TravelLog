@@ -15,7 +15,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          tabBarLabel: "home",
+          tabBarLabel: "Home",
           tabBarIcon: ({ focused }) => (
             <Feather
               name="home"

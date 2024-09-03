@@ -19,10 +19,13 @@ import { UserContext } from "../../context/UserContext";
 import { showToast } from "../../utils/toast";
 import { GetPhotoRef } from "../../utils/googleMap";
 import { getPhoto } from "../../utils/map";
+import { fetchData } from "../../utils/db";
+import { Timestamp, where } from "firebase/firestore";
 
 export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [photoURL, setPhotoURL] = useState('');
+  const [topDestinations, setTopDestinations] = useState([]);
 
   const { userData } = useContext(UserContext);
 
@@ -30,7 +33,11 @@ export default function Home() {
     if (userData && userData?.address?.name) {
       generatePhotoURL();
     }
-  }, [userData])
+  }, [userData]);
+
+  useEffect(() => {
+    getLast3MonthsTrip();
+  }, [])
 
   const generatePhotoURL = async () => {
     try {
@@ -41,6 +48,60 @@ export default function Home() {
       console.log('There was an error in generate photo url: ', error);
       showToast('error', 'There was an error in generate photo url', error);
     }
+  }
+
+  // Get last 3 months trips
+  const getLast3MonthsTrip = async () => {
+    try {
+      const today = new Date();
+      const threeMonthsAgo = new Date(today);
+
+      threeMonthsAgo.setMonth(today.getMonth() - 3);
+
+      // Convert to Firebase Timestamp
+      const threeMonthsAgoTimestamp = Timestamp.fromDate(threeMonthsAgo);
+
+      const trips = await fetchData('Trips', where('createdAt', '>=', threeMonthsAgoTimestamp));
+
+      const lastThreeMonthsTopDestinations = getTopDestinations(trips);
+
+      setTopDestinations(lastThreeMonthsTopDestinations);
+    } catch (error) {
+      console.log('There was an error: ', error);
+      showToast('error', 'There was an error', error)
+    }
+  }
+
+  const getTopDestinations = (trips) => {
+    if (trips.length === 0) {
+      return [];
+    }
+
+    const destinationCount = {};
+
+    for (const trip of trips) {
+      const destination = trip.tripData.trip.destination;
+      // const destinationKey = `${destination} - ${trip.photoRef}`
+
+      if (!destinationCount[destination]) {
+        destinationCount[destination] = 1;
+      } else {
+        destinationCount[destination]++;
+      }
+    }
+
+    console.log(destinationCount, 'destination count');
+
+    // If object has more than 10 pairs -> only get 10 highest
+    const sortedDestinations = Object.keys(destinationCount).sort((destinationA, destinationB) => {
+      return destinationCount[destinationB] - destinationCount[destinationA];
+    });
+
+    if (Object.keys(destinationCount).length > 10) {
+      return sortedDestinations.slice(0, 10);
+    } 
+
+    return sortedDestinations;
   }
 
 
@@ -155,9 +216,16 @@ export default function Home() {
           horizontal
           style={{ display: "flex", flexDirection: "row", gap: 10 }}
         >
+          {/* <DestinationSummary />
           <DestinationSummary />
-          <DestinationSummary />
-          <DestinationSummary />
+          <DestinationSummary /> */}
+          {
+            topDestinations.length > 0 && topDestinations.map((destination, index) => {
+              return (
+                <DestinationSummary key={index} location={destination}/>
+              )
+            })
+          }
         </ScrollView>
 
         {/* Features Blogs */}
