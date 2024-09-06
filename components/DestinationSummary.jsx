@@ -5,7 +5,7 @@ import { Colors } from '../constants/Colors';
 import { GetPhotoRef } from '../utils/googleMap';
 import { getPhoto } from "../utils/map";
 
-export default function ({location}) {
+export default function ({location, style}) {
   const [photoLink, setPhotoLink] = useState('');
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function ({location}) {
   }
 
   return (
-    <View style={{ width: 180, marginHorizontal: 20 }}>
+    <View style={[{ width: 180, marginHorizontal: 20 }, {...style}]}>
       <Image
         source={{
           uri: photoLink,

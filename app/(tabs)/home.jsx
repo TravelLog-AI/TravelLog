@@ -5,27 +5,28 @@ import {
   Text,
   Image,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { tabsStyles } from "./styles";
 import { Ionicons } from "@expo/vector-icons";
 import CreateModal from "../../components/Modals/Create/Create";
 import { Colors } from "../../constants/Colors";
-import { Avatar } from "react-native-paper";
+import { Avatar, Divider } from "react-native-paper";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import BlogSummary from "../../components/BlogSummary";
 import DestinationSummary from "../../components/DestinationSummary";
-import BlogPost from "../../components/BlogPost";
 import { UserContext } from "../../context/UserContext";
 import { showToast } from "../../utils/toast";
 import { GetPhotoRef } from "../../utils/googleMap";
 import { getPhoto } from "../../utils/map";
 import { fetchData } from "../../utils/db";
 import { Timestamp, where } from "firebase/firestore";
+import NotFound from "../../components/NotFound";
+import BlogPost from "../../components/BlogPost";
 
 export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [photoURL, setPhotoURL] = useState('');
+  const [photoURL, setPhotoURL] = useState('https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=');
   const [topDestinations, setTopDestinations] = useState([]);
+  const [topBlogs, setTopBlogs] = useState([]);
 
   const { userData } = useContext(UserContext);
 
@@ -36,7 +37,8 @@ export default function Home() {
   }, [userData]);
 
   useEffect(() => {
-    getLast3MonthsTrip();
+    fetchLast3MonthsTrip();
+    fetchTop10BlogsOfTheMonth();
   }, [])
 
   const generatePhotoURL = async () => {
@@ -51,7 +53,7 @@ export default function Home() {
   }
 
   // Get last 3 months trips
-  const getLast3MonthsTrip = async () => {
+  const fetchLast3MonthsTrip = async () => {
     try {
       const today = new Date();
       const threeMonthsAgo = new Date(today);
@@ -90,8 +92,6 @@ export default function Home() {
       }
     }
 
-    console.log(destinationCount, 'destination count');
-
     // If object has more than 10 pairs -> only get 10 highest
     const sortedDestinations = Object.keys(destinationCount).sort((destinationA, destinationB) => {
       return destinationCount[destinationB] - destinationCount[destinationA];
@@ -102,6 +102,41 @@ export default function Home() {
     } 
 
     return sortedDestinations;
+  }
+
+  const fetchTop10BlogsOfTheMonth = async () => {
+    try {
+      const today = new Date();
+      const firstDayOfThisMonth = new Date(today);
+
+      firstDayOfThisMonth.setDate(1);
+
+      // Convert to Firebase Timestamp
+      const firstDayTimestamp = Timestamp.fromDate(firstDayOfThisMonth);
+
+      const blogs = await fetchData('Blogs', where('createdAt', '>=', firstDayTimestamp));
+
+      const sortedTopBlogs = sortBlogsByLikesAndViews(blogs);
+      setTopBlogs(sortedTopBlogs);
+    } catch (error) {
+      console.log('There was an error: ', error);
+      showToast('error', 'There was an error', error)
+    }
+  }
+
+  const sortBlogsByLikesAndViews = (blogList) => {
+    const sortedBlogs = blogList.sort((blogA, blogB) => {
+      if (blogB.likes !== blogA.likes) {
+        return blogB.likes - blogA.likes;
+      }
+
+      return blogB.views - blogA.views
+    });
+
+    if (sortedBlogs.length > 10) {
+      return sortedBlogs.slice(0, 10);
+    }
+    return sortedBlogs;
   }
 
 
@@ -138,7 +173,6 @@ export default function Home() {
               position: "absolute",
               bottom: 0,
               left: 0,
-              // marginHorizontal: "5%",
               marginVertical: 10,
               flex: 1,
               paddingHorizontal: '5%',
@@ -152,7 +186,6 @@ export default function Home() {
                 alignItems: "center",
                 marginVertical: 20,
                 width: "100%",
-                // marginRight: '5%'
               }}
             >
               <Avatar.Text
@@ -237,7 +270,7 @@ export default function Home() {
             marginHorizontal: "5%",
           }}
         >
-          Top Blogs Of This Week
+          Top Blogs Of This Month
         </Text>
         <View
           // horizontal
@@ -249,15 +282,18 @@ export default function Home() {
             marginRight: 50,
           }}
         >
-          {/* <BlogSummary />
-        <BlogSummary />
-        <BlogSummary /> */}
-          <BlogPost />
-          <BlogPost />
-          <BlogPost />
-          <BlogPost />
-          <BlogPost />
-          <BlogPost />
+          {
+            topBlogs.length > 0 ? topBlogs.map((blog, index) => {
+              return (
+                <Fragment key={index}>
+                  <BlogPost blog={blog}/>
+                  <Divider />
+                </Fragment>
+              )
+            }) : (
+              <NotFound text="No Blogs Found"/>
+            )
+          }
         </View>
       </ScrollView>
       <TouchableOpacity

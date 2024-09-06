@@ -56,10 +56,8 @@ export default function CreateTrip({ onClose }) {
 
       // Generate AI Trip
       const result = await chatSession.sendMessage(FINAL_PROMPT);
-      console.log({result});
 
       const tripRes = JSON.parse(result.response.text());
-      console.log({tripRes});
       const createdAt = new Date();
 
       // Get photo ref to display it
@@ -67,7 +65,7 @@ export default function CreateTrip({ onClose }) {
 
       // Add trip to DB
       const newTripDoc = await addDoc(tripsCollection, {
-        userDocId: userData.docId,
+        userId: userData.docId,
         tripData: tripRes, // AI Result
         createdAt,
         photoRef

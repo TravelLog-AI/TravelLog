@@ -2,17 +2,20 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { Avatar } from 'react-native-paper'
 import { Colors } from '../constants/Colors'
+import moment from 'moment';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function BlogPost() {
+export default function BlogPost({blog}) {
+
   return (
-    <View style={{ flexDirection: "row", gap: 10 }}>
+    <View style={{ flexDirection: "row", gap: 10, alignItems: 'flex-start' }}>
       <Avatar.Text size={30} label="B" />
 
       <View>
         {/* User & Post Info */}
         <View>
           <Text style={{ fontFamily: "open-sans-bold", fontSize: 15 }}>
-            Bin Mai
+            {blog?.userName}
           </Text>
           <Text
             style={{
@@ -21,7 +24,7 @@ export default function BlogPost() {
               color: Colors.DARK_GREY,
             }}
           >
-            15 Jul 2024
+            {moment(blog?.createdAt.toDate()).fromNow()}
           </Text>
         </View>
 
@@ -33,21 +36,34 @@ export default function BlogPost() {
             marginVertical: 10,
           }}
         >
-          7 Days In Victoria, BC. What an unforgettable memory.
+          {blog?.title}
         </Text>
         <Text style={{ fontFamily: "open-sans", fontSize: 15 }}>
-          It is a long established fact that a reader will be distracted by the
-          readable content of a page when looking at its layout. The point of
-          using Lorem Ipsum is that it has a more-or-less normal distribution of
-          letters, as opposed to using 'Content here, content here', making it
-          look like readable English.
+          {blog?.description}
         </Text>
-        <Image
-        source={{
-          uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=AXCi2Q7xYJbuuY48mFAqxHuLlvhjDA3uFAPVZ-1-f0Nhj1apm3Wjmy2DO62XzBw9skTf4Vwbk8U_37z-NJsuPrKbwpzVpJud6UKm5lN_fcxpFenxPvT5Umwrk__XyqeLB_72tl4t6zr685xv3DF-xB5ggz9SFo5ipEIdBQib6bnJpDffU-3a&key=${process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY}`,
-        }}
-        style={{ width: "100%", height: 200, borderRadius: 20, marginTop: 20 }}
-      />
+        {blog?.imageURL && (
+          <Image
+            source={{
+              uri: blog.imageURL,
+            }}
+            style={{
+              width: "100%",
+              height: 200,
+              borderRadius: 20,
+              marginTop: 20,
+            }}
+          />
+        )}
+      <View flexDirection="row" gap={20} alignItems="center" marginTop={10}>
+        <View flexDirection="row" gap={5} alignItems="center">
+          <AntDesign name="like2" size={20} color="grey" />
+          <Text style={{fontFamily: 'open-sans', color: Colors.DARK_GREY, fontSize: 15}}>{blog?.likes || 0}</Text>
+        </View>
+        <View flexDirection="row" gap={5} alignItems="center">
+          <AntDesign name="eyeo" size={20} color="grey" />
+          <Text style={{fontFamily: 'open-sans', color: Colors.DARK_GREY, fontSize: 15}}>{blog.views || 0}</Text>
+        </View>
+      </View>
       </View>
     </View>
   );
