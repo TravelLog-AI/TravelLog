@@ -18,15 +18,29 @@ import EditProfile from "../../components/Modals/EditProfile";
 export default function Profile() {
   const [currentTab, setCurrentTab] = useState(profileTabs[0].id);
   const [isOpenEditProfile, setIsOpenEditProfile] = useState(false);
+  const [userBlogs, setUserBlogs] = useState([]);
   const [userTrips, setUserTrips] = useState([]);
 
   const { userData } = useContext(UserContext);
 
   useEffect(() => {
     if (userData) {
+      fetchUserBlogs();
       fetchUserTrips();
+      
     }
   }, [userData]);
+
+  const fetchUserBlogs = async () => {
+    try {
+      const fetchedBlogs = await fetchData('Blogs', where("userId", "==", userData.docId));
+
+      setUserBlogs(fetchedBlogs);
+    } catch (error) {
+      console.log('There was an error: ', error);
+      showToast('error', 'There was an error: ', error);
+    }
+  }
 
   const fetchUserTrips = async () => {
     try {
@@ -120,7 +134,7 @@ export default function Profile() {
         {currentTab === profileTabs[0].id ? (
           <MyTrips trips={userTrips} />
         ) : (
-          <MyBlogs />
+          <MyBlogs blogs={userBlogs}/>
         )}
       </View>
     </ScrollView>

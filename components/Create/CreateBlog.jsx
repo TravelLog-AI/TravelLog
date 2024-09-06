@@ -1,50 +1,91 @@
 import { View, Text, ScrollView } from "react-native";
-import React, { useState } from "react";
-import SelectPlace from "../Modals/Create/SelectPlace";
+import React, { useContext, useEffect, useState } from "react";
 import { primaryStyles } from "../../styles/primary";
 import { createStyles } from "./styles";
-import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Colors } from "../../constants/Colors";
+import { UserContext } from "../../context/UserContext";
+import { fetchData } from '../../utils/db';
+import { addDoc, collection, where } from "firebase/firestore";
+import NotFound from "../NotFound";
+import DestinationSummary from "../DestinationSummary";
+import { TouchableOpacity } from "react-native";
+import PrimaryButton from "../Primary/Button";
+import { db } from "../../config/firebase.config";
 
-export default function CreateBlog() {
-  const [address, setAddress] = useState();
-  const [isSelectPlaceOpen, setIsSelectPlaceOpen] = useState(false);
-  const [title, setTitle] = useState("");
+export default function CreateBlog({onClose, showToast}) {
   const [description, setDescription] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  const [title, setTitle] = useState("");
+  const [userTrips, setUserTrips] = useState([]);
+  const [selectedTrip, setSelectedTrip] = useState(null);
+
+  const { userData } = useContext(UserContext);
+
+  useEffect(() => {
+    if (userData) {
+      fetchUserTrips();
+    }
+  }, [userData]);
+
+  const fetchUserTrips = async () => {
+    try {
+      const trips = await fetchData('Trips', where('userDocId', '==', userData.docId));
+
+      setUserTrips(trips);
+    } catch (error) {
+      console.log('There was an error: ', error);
+      showToast('error', 'There was an error', error);
+    }
+  }
+
+  const minimizeDate = (longDate) => {
+    return longDate.split(' ').slice(1, 4).join(' ');
+  }
+
+  const handleCreateBlog = async () => {
+    if (title === '' || description === '' || selectedTrip === null) {
+      showToast('error', 'Please fill out all fields', '');
+      return;
+    }
+    try {
+      setIsCreating(true);
+      const blogCollection = collection(db, 'Blogs');
+      await addDoc(blogCollection, {
+        title,
+        description,
+        tripId: selectedTrip.id,
+        userId: userData.docId,
+        userName: userData.name,
+        createdAt: new Date(),
+        likes: 0,
+        views: 0,
+      });
+
+      setIsCreating(false);
+      
+      showToast('success', 'Create Your Blog Successfully');
+      
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+      // onClose();
+    } catch (error) {
+      console.log('There was an error: ', error);
+      showToast('error', 'There was an error', error);
+    }
+  }
 
   return (
     <ScrollView>
-      <SelectPlace
-        open={isSelectPlaceOpen}
-        onClose={() => setIsSelectPlaceOpen(false)}
-        setAddress={setAddress}
-      />
-      <Text style={[primaryStyles.heading, createStyles.heading]}>
+      <Text style={[primaryStyles.heading, createStyles.heading, {marginTop: 10}]}>
         Let's Share Your Experience ✍🏻
       </Text>
       <Text style={[primaryStyles.subtitle, createStyles.subtitle]}>
         Connecting through stories and building stronger communities together
       </Text>
-
-      {/* Destination */}
-      <Text style={[primaryStyles.heading, createStyles.sectionHeading]}>
-        Destination 🗺️
-      </Text>
-      <TextInput
-        placeholder="Where"
-        left={
-          <TextInput.Icon
-            icon={() => (
-              <FontAwesome6 name="map-location-dot" size={20} color="black" />
-            )}
-          />
-        }
-        onPress={() => setIsSelectPlaceOpen(true)}
-        value={address?.name || ""}
-        style={createStyles.textInput}
-      />
 
       {/* Title */}
       <Text style={[primaryStyles.heading, createStyles.sectionHeading]}>
@@ -58,7 +99,7 @@ export default function CreateBlog() {
           />
         }
         value={title}
-        onChange={(text) => setTitle(text)}
+        onChangeText={(text) => setTitle(text)}
         style={createStyles.textInput}
       />
 
@@ -67,22 +108,79 @@ export default function CreateBlog() {
         Description
       </Text>
       <TextInput
-        placeholder="Write your title..."
+        placeholder="Write your description..."
         left={
           <TextInput.Icon
             icon={() => <FontAwesome name="pencil" size={20} color="black" />}
           />
         }
-        value={title}
-        onChange={(text) => setDescription(text)}
+        value={description}
+        onChangeText={(text) => setDescription(text)}
         style={createStyles.textInput}
+        multiline
       />
 
       {/* Your Trip */}
       <Text style={[primaryStyles.heading, createStyles.sectionHeading]}>
         Your Trip
       </Text>
-      <Text>* Select your Trip will go here *</Text>
+      <ScrollView horizontal style={{marginTop: 20}}>
+        {userTrips.length > 0 ? (
+          userTrips.map((trip, index) => {
+            console.log(trip, 'trip')
+            return (
+              <TouchableOpacity
+                key={index}
+                style={{
+                  borderWidth: selectedTrip && selectedTrip.id === trip.id ? 2 : 0,
+                  borderColor: Colors.PRIMARY,
+                  marginHorizontal: 10,
+                  borderRadius: 20,
+                }}
+                onPress={() => setSelectedTrip(trip)}
+              >
+                <DestinationSummary
+                  location={trip.tripData.trip.destination}
+                  style={{ marginHorizontal: 0 }}
+                />
+                <View
+                  style={{
+                    position: "absolute",
+                    top: 5,
+                    right: 10,
+                    backgroundColor: Colors.SECONDARY,
+                    padding: 5,
+                    borderRadius: 10,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "open-sans-medium",
+                      fontSize: 10,
+                      color: Colors.WHITE,
+                    }}
+                  >
+                    {minimizeDate(trip.tripData.trip.start_date)} -{" "}
+                    {minimizeDate(trip.tripData.trip.end_date)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })
+        ) : (
+          <View style={{justifyContent: 'center', alignContent: 'center', width: '100%'}}>
+            <NotFound text="You currently have no trip" />
+          </View>
+        )}
+      </ScrollView>
+      <PrimaryButton
+        onPress={handleCreateBlog}
+        style={{ width: "100%", padding: 10, marginTop: 30 }}
+        // badgeContent="AI Powered 🤖"
+        loading={isCreating}
+      >
+        Create
+      </PrimaryButton>
     </ScrollView>
   );
 }

@@ -8,6 +8,8 @@ import CreateTabs, { TABS } from "../../Create/Tabs";
 import CreateTrip from "../../Create/CreateTrip";
 import CreateBlog from "../../Create/CreateBlog";
 import { createStyles } from "../../Create/styles";
+import Toast from "react-native-toast-message";
+import { showToast } from "../../../utils/toast";
 
 export default function CreateModal({ open, onClose }) {
   const [currentTab, setCurrentTab] = useState(TABS.TRIP);
@@ -28,10 +30,13 @@ export default function CreateModal({ open, onClose }) {
           }}
         >
           <PrimaryButton
-            onPress={() => {onClose(); console.log('On Close')}}
+            onPress={() => {
+              onClose();
+              console.log("On Close");
+            }}
             style={{ backgroundColor: Colors.WHITE, borderRadius: "50%" }}
           >
-            <Entypo name="cross" size={40} color={Colors.GREY} />
+            <Entypo name="cross" size={30} color={Colors.GREY} />
           </PrimaryButton>
         </View>
 
@@ -40,8 +45,9 @@ export default function CreateModal({ open, onClose }) {
         {currentTab === TABS.TRIP ? (
           <CreateTrip onClose={onClose} />
         ) : (
-          <CreateBlog />
+          <CreateBlog onClose={onClose} showToast={showToast} />
         )}
+        <Toast position="bottom" swipeable />
       </Modal>
     </View>
   );
