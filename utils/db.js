@@ -2,7 +2,7 @@ import { collection, doc, getDoc, getDocs, query, updateDoc } from 'firebase/fir
 import { db } from '../config/firebase.config';
 import { showToast } from './toast';
 
-export const fetchData = async (collectionName, condition) => {
+export const fetchData = async (collectionName, condition = null) => {
   const result = [];
   try {
     const collectionRef = collection(db, collectionName);
