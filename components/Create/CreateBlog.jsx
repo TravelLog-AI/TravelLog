@@ -14,6 +14,7 @@ import DestinationSummary from "../DestinationSummary";
 import { TouchableOpacity } from "react-native";
 import PrimaryButton from "../Primary/Button";
 import { db } from "../../config/firebase.config";
+import { GetPhotoRef } from "../../utils/googleMap";
 
 export default function CreateBlog({onClose, showToast}) {
   const [description, setDescription] = useState("");
@@ -53,6 +54,8 @@ export default function CreateBlog({onClose, showToast}) {
     try {
       setIsCreating(true);
       const blogCollection = collection(db, 'Blogs');
+
+      const photoRef = await GetPhotoRef(selectedTrip.tripData.trip.destination);
       await addDoc(blogCollection, {
         title,
         description,
@@ -62,6 +65,7 @@ export default function CreateBlog({onClose, showToast}) {
         createdAt: new Date(),
         likes: 0,
         views: 0,
+        photoRef 
       });
 
       setIsCreating(false);
