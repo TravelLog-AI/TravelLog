@@ -5,11 +5,15 @@ import { Colors } from '../../constants/Colors';
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import AutoComplete from '../../components/AutoComplete';
 import { fetchData } from '../../utils/db';
+import { useRouter } from 'expo-router';
 
+const durationTime = 200;
 export default function Search() {
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState('City');
   const [searchKeywords, setSearchKeywords] = useState('');
   const [userList, setUserList] = useState([]);
+
+  const router = useRouter();
   
   // Animation
   const cityOpacity = useRef(new Animated.Value(selectedOption === 'City' ? 1 : 0)).current;
@@ -28,25 +32,25 @@ export default function Search() {
       animations.push(
         Animated.timing(cityOpacity, {
           toValue: 1,
-          duration: 300,
+          duration: durationTime,
           easing: Easing.in(Easing.linear),
           useNativeDriver: true,
         }),
         Animated.timing(cityTranslateY, {
           toValue: 0,
-          duration: 300,
+          duration: durationTime,
           easing: Easing.in(Easing.linear),
           useNativeDriver: true,
         }),
         Animated.timing(profileOpacity, {
           toValue: 0,
-          duration: 300,
+          duration: durationTime,
           easing: Easing.out(Easing.linear),
           useNativeDriver: true,
         }),
         Animated.timing(profileTranslateY, {
           toValue: -100,
-          duration: 300,
+          duration: durationTime,
           easing: Easing.out(Easing.linear),
           useNativeDriver: true,
         })
@@ -55,25 +59,25 @@ export default function Search() {
       animations.push(
         Animated.timing(profileOpacity, {
           toValue: 1,
-          duration: 300,
+          duration: durationTime,
           easing: Easing.in(Easing.linear),
           useNativeDriver: true,
         }),
         Animated.timing(profileTranslateY, {
           toValue: 0,
-          duration: 300,
+          duration: durationTime,
           easing: Easing.in(Easing.linear),
           useNativeDriver: true,
         }),
         Animated.timing(cityOpacity, {
           toValue: 0,
-          duration: 300,
+          duration: durationTime,
           easing: Easing.out(Easing.linear),
           useNativeDriver: true,
         }),
         Animated.timing(cityTranslateY, {
           toValue: -100,
-          duration: 300,
+          duration: durationTime,
           easing: Easing.out(Easing.linear),
           useNativeDriver: true,
         })
@@ -95,23 +99,44 @@ export default function Search() {
     }
   }
 
+  const handleOnSelect = (keyword) => {
+    router.push(`search/${keyword}`);
+  }
+
   return (
-    <SafeAreaView>
-      <View style={{ flexDirection: "row", justifyContent: "center", gap: 10 }}>
+    <SafeAreaView style={{ backgroundColor: Colors.WHITE }}>
+      <View style={{ flexDirection: "row", justifyContent: "center", gap: 10, marginBottom: 10 }}>
         <PrimaryButton
-          labelStyle={{ fontSize: 15 }}
-          style={{ padding: 10, borderRadius: 10, width: "40%" }}
+          labelStyle={{
+            fontSize: 15,
+            color: selectedOption === "City" ? Colors.WHITE : Colors.PRIMARY,
+          }}
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            width: "40%",
+            backgroundColor:
+              selectedOption === "City" ? Colors.PRIMARY : Colors.WHITE,
+            borderWidth: 1,
+            borderColor: Colors.PRIMARY,
+          }}
           onPress={() => setSelectedOption("City")}
         >
           City
         </PrimaryButton>
         <PrimaryButton
-          labelStyle={{ fontSize: 15 }}
+          labelStyle={{
+            fontSize: 15,
+            color: selectedOption === "Profile" ? Colors.WHITE : Colors.PRIMARY,
+          }}
           style={{
             padding: 10,
             borderRadius: 10,
             width: "40%",
-            backgroundColor: Colors.SECONDARY,
+            backgroundColor:
+              selectedOption === "Profile" ? Colors.PRIMARY : Colors.WHITE,
+            borderWidth: 1,
+            borderColor: Colors.PRIMARY,
           }}
           onPress={() => setSelectedOption("Profile")}
         >
@@ -121,32 +146,49 @@ export default function Search() {
 
       {/* Search Section */}
       {selectedOption === "City" ? (
-        <Animated.View style={{opacity: cityOpacity, transform: [{translateY: cityTranslateY}]}}>
+        <Animated.View
+          style={{
+            opacity: cityOpacity,
+            transform: [{ translateY: cityTranslateY }],
+            paddingHorizontal: 10,
+          }}
+        >
           <View style={{ height: "100%" }}>
             <GooglePlacesAutocomplete
               placeholder="Search Place..."
               fetchDetails
-              onPress={() => {}}
+              // onPress={() => {}}
               query={{
                 key: process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY,
                 language: "en",
+                types: "(cities)",
               }}
               styles={{
                 textInputContainer: {
                   borderWidth: 1,
                   borderRadius: 5,
-                  marginTop: "5%",
+                  borderColor: Colors.GREY
                 },
+              }}
+              onPress={(data) => {
+                handleOnSelect(data.description);
               }}
             />
           </View>
         </Animated.View>
       ) : selectedOption === "Profile" ? (
-        <Animated.View style={{opacity: profileOpacity, transform: [{translateY: profileTranslateY}]}}>
+        <Animated.View
+          style={{
+            opacity: profileOpacity,
+            transform: [{ translateY: profileTranslateY }],
+            paddingHorizontal: 10,
+          }}
+        >
           <AutoComplete
             keywords={searchKeywords}
             setKeywords={setSearchKeywords}
             listToFind={userList}
+            onPress={(item) => handleOnSelect(item)}
           />
         </Animated.View>
       ) : (

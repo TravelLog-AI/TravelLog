@@ -4,7 +4,7 @@ import Modal from 'react-native-modal';
 import { modalStyles } from './styles';
 import PrimaryButton from '../Primary/Button';
 import { Colors } from '../../constants/Colors';
-import { Entypo, FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
+import { FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 import { Avatar, Divider, TextInput } from 'react-native-paper';
 import SelectPlace from './Create/SelectPlace';
@@ -13,7 +13,6 @@ import { UserContext } from '../../context/UserContext';
 import { showToast } from '../../utils/toast';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase.config';
-import { updateSingleDoc } from '../../utils/db';
 
 export default function EditProfile({
     open,

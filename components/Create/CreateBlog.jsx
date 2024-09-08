@@ -65,7 +65,8 @@ export default function CreateBlog({onClose, showToast}) {
         createdAt: new Date(),
         likes: 0,
         views: 0,
-        photoRef 
+        photoRef,
+        destination: selectedTrip.tripData.trip.destination
       });
 
       setIsCreating(false);
