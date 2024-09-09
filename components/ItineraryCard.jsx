@@ -3,6 +3,7 @@ import React from 'react'
 import { Colors } from '../constants/Colors'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function ItineraryCard({activity}) {
   return (
@@ -21,16 +22,19 @@ export default function ItineraryCard({activity}) {
     >
       <TimeLineComp />
       <View style={{ marginHorizontal: 20, gap: 10 }}>
-        <Text style={{fontFamily: 'open-sans-bold', fontSize: 15,}}>{activity.details}</Text>
+        <Text style={{ fontFamily: "open-sans-bold", fontSize: 15 }}>
+          {activity.name}
+        </Text>
         <View
           style={{
             display: "flex",
             flexDirection: "row",
             gap: 5,
             alignItems: "center",
+            marginRight: 10,
           }}
         >
-          <Entypo name="location" size={12} color={Colors.DARK_GREY} />
+          <FontAwesome name="book" size={12} color={Colors.DARK_GREY} />
           <Text
             style={{
               fontFamily: "open-sans-medium",
@@ -38,7 +42,7 @@ export default function ItineraryCard({activity}) {
               color: Colors.DARK_GREY,
             }}
           >
-            {activity.name}
+            {activity.details}
           </Text>
         </View>
         <View

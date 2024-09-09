@@ -69,9 +69,6 @@ export default function TripItinerary({itineraryData}) {
         }
       </ScrollView>
       <View style={{padding: 20, gap: 10}}>
-        {/* <ItineraryCard />
-        <ItineraryCard />
-        <ItineraryCard /> */}
         {
           dayActivities.length > 0 && dayActivities.map((activity, index) => {
             return (
