@@ -44,7 +44,7 @@ export default function Profile() {
     try {
       const fetchedTrips = await fetchData(
         "Trips",
-        where("userDocId", "==", userData.docId)
+        where("userId", "==", userData.docId)
       );
 
       setUserTrips(fetchedTrips);

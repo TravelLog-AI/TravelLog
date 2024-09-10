@@ -44,7 +44,7 @@ export default function TripDetails() {
             tripData?.photoRef || ""
           }&key=${process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY}`,
         }}
-        style={{ width: "100%", height: "40%" }}
+        style={{ width: "100%", height: "30%" }}
       />
       <SafeAreaView
         style={{ position: "absolute", top: 0, left: 0, margin: 30 }}
