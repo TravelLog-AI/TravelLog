@@ -18,11 +18,14 @@ export default function PrimaryButton({
       style={[
         primaryStyles.primaryButton,
         {
-          backgroundColor: variant === "outlined" ? "transparent" : Colors.PRIMARY,
+          backgroundColor:
+            variant === "outlined" ? "transparent" : Colors.PRIMARY,
           borderColor: Colors.PRIMARY,
           borderWidth: variant === "outlined" ? 2 : 0,
           opacity: loading ? 0.7 : 1, // Reduce opacity when loading
           padding: 15,
+          justifyContent: "center", // Add this line
+          alignItems: "center", // Add this line
           ...style,
         },
       ]}
@@ -35,33 +38,40 @@ export default function PrimaryButton({
       {loading ? (
         <ActivityIndicator color={Colors.WHITE} /> // Show loader when loading
       ) : (
-        <Text style={[{ fontSize: 20, color: variant === "outlined" ? Colors.PRIMARY : Colors.WHITE, textAlign: 'center' }, labelStyle]}>
+        <Text
+          style={[
+            {
+              fontSize: 20,
+              color: variant === "outlined" ? Colors.PRIMARY : Colors.WHITE,
+              textAlign: "center",
+            },
+            labelStyle,
+          ]}
+        >
           {children}
         </Text>
       )}
 
-      {
-        badgeContent && (
-          <View
-            style={{
-              position: 'absolute',
-              top: -15,
-              right: -5,
-              backgroundColor: Colors.SECONDARY,
-              borderRadius: 10,
-              paddingHorizontal: 5,
-              paddingVertical: 5,
-              zIndex: 1,
-            }}
+      {badgeContent && (
+        <View
+          style={{
+            position: "absolute",
+            top: -15,
+            right: -5,
+            backgroundColor: Colors.SECONDARY,
+            borderRadius: 10,
+            paddingHorizontal: 5,
+            paddingVertical: 5,
+            zIndex: 1,
+          }}
+        >
+          <Text
+            style={{ color: Colors.WHITE, fontSize: 12, fontWeight: "bold" }}
           >
-            <Text
-              style={{color: Colors.WHITE, fontSize: 12, fontWeight: 'bold'}}
-            >
-              {badgeContent}
-            </Text>
-          </View>
-        )
-      }
+            {badgeContent}
+          </Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 }

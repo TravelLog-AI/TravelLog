@@ -1,4 +1,4 @@
-import { Entypo, FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
+import { Entypo, FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 
 export const numberOfPeople = [
     '1 person',
@@ -48,3 +48,18 @@ export const profileTabs = [
     ),
   },
 ];
+
+export const overviewSubTabs = [
+  {
+    name: 'Flights',
+    getIcon: (color) => <MaterialIcons name="flight" size={24} color={color} />
+  },
+  {
+    name: 'Hotels',
+    getIcon: (color) => <MaterialIcons name="hotel" size={24} color={color} />
+  },
+  {
+    name: 'Landmarks',
+    getIcon: (color) => <MaterialIcons name="location-on" size={24} color={color} />
+  }
+]

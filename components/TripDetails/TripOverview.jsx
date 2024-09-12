@@ -10,6 +10,9 @@ import { YYYYMMDDFormat } from "../../utils/date";
 import Hotel from "../Hotel";
 import { Divider } from "react-native-paper";
 import NotFound from "../NotFound";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { overviewSubTabs } from "../../constants/arrays";
+
 
 const serpAPIKey = process.env.EXPO_PUBLIC_SERP_API_KEY;
 
@@ -112,13 +115,21 @@ export default function TripOverview({tripData}) {
           gap: 5,
         }}
       >
-        {tabs.map((tab, index) => {
+        {overviewSubTabs.map((tab, index) => {
+          let icon;
+          if (currentTab === tab.name) {
+            icon = overviewSubTabs[index].getIcon(Colors.WHITE);
+          } else {
+            icon = overviewSubTabs[index].getIcon(Colors.PRIMARY);
+          }
+
           return (
             <PrimaryButton
               key={index}
               labelStyle={{
                 fontSize: 15,
-                color: currentTab === tab ? Colors.WHITE : Colors.PRIMARY,
+                color: currentTab === tab.name ? Colors.WHITE : Colors.PRIMARY,
+                textAlign: "center",
               }}
               style={{
                 width: 110,
@@ -127,11 +138,33 @@ export default function TripOverview({tripData}) {
                 borderWidth: 2,
                 borderColor: Colors.PRIMARY,
                 backgroundColor:
-                  currentTab === tab ? Colors.PRIMARY : Colors.WHITE,
+                  currentTab === tab.name ? Colors.PRIMARY : Colors.WHITE,
               }}
-              onPress={() => setCurrentTab(tab)}
+              onPress={() => setCurrentTab(tab.name)}
             >
-              {tab}
+              <View
+                style={{
+                  flexDirection: "column",
+                  width: "100%",
+                  height: "100%",
+                  gap: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {icon}
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontFamily: "open-sans-medium",
+                    fontSize: 15,
+                    color:
+                      currentTab === tab.name ? Colors.WHITE : Colors.PRIMARY,
+                  }}
+                >
+                  {tab.name}
+                </Text>
+              </View>
             </PrimaryButton>
           );
         })}
