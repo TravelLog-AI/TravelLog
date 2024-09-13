@@ -68,7 +68,8 @@ export default function CreateTrip({ onClose }) {
         userId: userData.docId,
         tripData: tripRes, // AI Result
         createdAt,
-        photoRef
+        photoRef,
+        coordinates: address.coordinates
       });
 
       setIsOpenGeneratingAI(false);
