@@ -33,7 +33,7 @@ export default function CreateBlog({onClose, showToast}) {
 
   const fetchUserTrips = async () => {
     try {
-      const trips = await fetchData('Trips', where('userDocId', '==', userData.docId));
+      const trips = await fetchData('Trips', where('userId', '==', userData.docId));
 
       setUserTrips(trips);
     } catch (error) {

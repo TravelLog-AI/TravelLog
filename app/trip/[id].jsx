@@ -59,7 +59,7 @@ export default function TripDetails() {
 
       {/* Trip Tab */}
       {currentTripTab === tripDetailTabs[0].name ? (
-        <TripOverview tripData={tripData?.tripData?.trip || {}} />
+        <TripOverview tripData={tripData?.tripData?.trip || {}} coordinates={tripData?.coordinates} />
       ) : currentTripTab === tripDetailTabs[1].name ? (
         <TripItinerary
           itineraryData={tripData?.tripData?.trip.itinerary || []}

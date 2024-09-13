@@ -39,7 +39,7 @@ export default function Home() {
   useEffect(() => {
     fetchLast3MonthsTrip();
     fetchTop10BlogsOfTheMonth();
-  }, [])
+  }, []);
 
   const generatePhotoURL = async () => {
     try {
@@ -207,7 +207,7 @@ export default function Home() {
                     color: Colors.LIGHT_PRIMARY,
                   }}
                 >
-                  {userData?.address.name || ""}
+                  {userData?.address?.name || ""}
                 </Text>
               </View>
             </View>
@@ -228,7 +228,7 @@ export default function Home() {
                   color: Colors.WHITE,
                 }}
               >
-                Welcome back, Bin Mai 👋
+                Welcome back, {userData?.name || ''} 👋
               </Text>
             </View>
           </View>
