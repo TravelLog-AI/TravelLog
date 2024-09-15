@@ -1,26 +1,19 @@
 import { View, Text, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { tripDetailsStyle } from "../../app/trip/style";
 import { Colors } from "../../constants/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
 import PrimaryButton from "../Primary/Button";
-import { showToast } from "../../utils/toast";
-import axios from "axios";
-import { YYYYMMDDFormat } from "../../utils/date";
 import NotFound from "../NotFound";
 import { overviewSubTabs } from "../../constants/arrays";
 import Landmarks from "../Landmarks";
 import HotelList from "../HotelList";
 
-
-const serpAPIKey = process.env.EXPO_PUBLIC_SERP_API_KEY;
-
-const tabs = ['Flights', 'Hotels', 'Landmarks']
-export default function TripOverview({tripData, coordinates}) {
+export default function TripOverview({tripData, coordinates, tripId}) {
   const [currentTab, setCurrentTab] = useState('Flights');
   
   return (
-    <ScrollView>
+    <View>
       <Text style={tripDetailsStyle.heading}>Overview</Text>
       <Text
         style={[
@@ -139,11 +132,11 @@ export default function TripOverview({tripData, coordinates}) {
         {currentTab === "Hotels" ? (
           <HotelList tripData={tripData} currentTab={currentTab}/>
         ) : currentTab === "Landmarks" ? (
-          <Landmarks tripData={tripData} coordinates={coordinates}/>
+          <Landmarks tripData={tripData} coordinates={coordinates} tripId={tripId}/>
         ) : (
           <NotFound text="Coming Soon" />
         )}
       </View>
-    </ScrollView>
+    </View>
   );
 }
