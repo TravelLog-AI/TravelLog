@@ -1,6 +1,5 @@
 export const YYYYMMDDFormat = (inputDate) => {
     const date = new Date(inputDate);
-    console.log(date, 'date');
 
     const month = date.getMonth() + 1;
     const day = date.getDate();

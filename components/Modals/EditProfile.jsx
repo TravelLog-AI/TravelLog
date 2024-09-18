@@ -13,6 +13,7 @@ import { UserContext } from '../../context/UserContext';
 import { showToast } from '../../utils/toast';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase.config';
+import CloseModalButton from '../CloseModalButton';
 
 export default function EditProfile({
     open,
@@ -84,14 +85,7 @@ export default function EditProfile({
         />
         <SafeAreaView style={{ flexDirection: "row", alignItems: "center" }}>
           {/* Heading */}
-          <View style={[modalStyles.closeButtonContainer, { flex: 1 }]}>
-            <PrimaryButton
-              onPress={onClose}
-              style={{ backgroundColor: Colors.WHITE, borderRadius: "50%" }}
-            >
-              <Feather name="arrow-left" size={30} color={Colors.DARK_GREY} />
-            </PrimaryButton>
-          </View>
+          <CloseModalButton containerStyle={{flex: 1}} onPress={onClose} />
           <View style={{ flex: 1 }}>
             <Text
               style={{

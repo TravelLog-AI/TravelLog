@@ -19,8 +19,8 @@ export default function PrimaryButton({
         primaryStyles.primaryButton,
         {
           backgroundColor:
-            variant === "outlined" ? "transparent" : Colors.PRIMARY,
-          borderColor: Colors.PRIMARY,
+            (variant === "outlined" || variant === "standard") ? "transparent" : Colors.PRIMARY,
+          borderColor: variant === "outlined" ? Colors.PRIMARY : '',
           borderWidth: variant === "outlined" ? 2 : 0,
           opacity: loading ? 0.7 : 1, // Reduce opacity when loading
           padding: 15,
@@ -42,7 +42,7 @@ export default function PrimaryButton({
           style={[
             {
               fontSize: 20,
-              color: variant === "outlined" ? Colors.PRIMARY : Colors.WHITE,
+              color: (variant === "outlined" || variant === 'standard') ? Colors.PRIMARY : Colors.WHITE,
               textAlign: "center",
             },
             labelStyle,

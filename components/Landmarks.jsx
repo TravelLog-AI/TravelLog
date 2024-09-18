@@ -124,7 +124,7 @@ export default function Landmarks({ tripData, coordinates, tripId }) {
   const fetchLandmarks = async () => {
     try {
       const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${coordinates?.lat},${coordinates?.lng}&radius=5000&type=tourist_attraction&key=${googlePlaceAPI}`
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${coordinates?.lat},${coordinates?.lng}&radius=5000&type=tourist_attraction&fields=name,rating,formatted_address,editorial_summary,opening_hours,photos&key=${googlePlaceAPI}`
       );
       setLandmarkList(response.data.results);
     } catch (error) {
@@ -162,6 +162,7 @@ export default function Landmarks({ tripData, coordinates, tripId }) {
       const {icon, icon_background_color, icon_mask_base_uri, plus_code, ...restOfData} = landmark;
       return {...restOfData};
     })
+
     try {
       await updateSingleDoc('Trips', tripId, {
         'tripData.trip.landmarks': arrayUnion(...formatLandmarks),
@@ -173,14 +174,33 @@ export default function Landmarks({ tripData, coordinates, tripId }) {
   };
 
   const handleAddLandmark = (landmark) => {
+    const isLandmarkValid = checkIsLandmarkValid(landmark);
+    if (!isLandmarkValid) {
+      showToast('error', 'Landmark Already Existed' ,'');
+      return;
+    }
     handleAddLandmarks([landmark]);
   };
+
+
+  const checkIsLandmarkValid = (landmark) => {
+    console.log(tripData, 'tripData');
+    if (!tripData?.landmarks || tripData?.landmarks?.length === 0) {
+      return true;
+    }
+
+    const isAlreadyExist = tripData.landmarks.find((existingLandmark) => {
+      return existingLandmark.name === landmark.name
+    });
+
+    return !isAlreadyExist;
+  }
 
   return (
     <View style={{ flexDirection: 'column', gap: 15, marginTop: 20, marginBottom: 50 }}>
       {landmarksInItinerary.length > 0 &&
-        landmarksInItinerary.map((landmark) => {
-          return <Landmark key={landmark.name} place={landmark} />;
+        landmarksInItinerary.map((landmark, index) => {
+          return <Landmark key={index} place={landmark} />;
         })}
 
       <ScrollView horizontal>

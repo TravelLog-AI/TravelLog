@@ -7,8 +7,6 @@ import { tripDetailTabs } from "../../constants/arrays";
 import TripItinerary from "../../components/TripDetails/TripItinerary";
 import TripAdvisor from "../../components/TripDetails/TripAdvisor";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { showToast } from './../../utils/toast';
-import { fetchDoc } from "../../utils/db";
 import Feather from "@expo/vector-icons/Feather";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebase.config";
@@ -16,11 +14,9 @@ import PrimaryButton from "../../components/Primary/Button";
 
 const animationTime = 100;
 export default function TripDetails() {
-  // const [currentSubTab, setCurrentSubTab] = useState("");
   const [currentTripTab, setCurrentTripTab] = useState("Overview");
   const [tripData, setTripData] = useState();
     // Track scroll position
-    const [showMainTabs, setShowMainTabs] = useState(true);
   const [showSmallTabs, setShowSmallTabs] = useState(false);
   const router = useRouter();
 
@@ -33,8 +29,6 @@ export default function TripDetails() {
     outputRange: [200, 0],
     extrapolate: 'clamp'
   });
-  // const smallTabOpacity = useRef(new Animated.Value(0)).current;
-  // const mainTabOpacity = useRef(new Animated.Value(1)).current;
   const smallTabOpacity = scrollY.interpolate({
     inputRange: [0, 100],
     outputRange: [0, 1],
@@ -51,7 +45,7 @@ export default function TripDetails() {
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "Trips", id), (docSnapshot) => {
       if (docSnapshot.exists()) {
-        setTripData(docSnapshot.data());
+        setTripData({...docSnapshot.data(), docId: docSnapshot.id});
       } else {
         console.log("Trip data not found");
       }
@@ -68,23 +62,23 @@ export default function TripDetails() {
 
   return (
     <View style={{ height: "100%", backgroundColor: Colors.WHITE }}>
-        <Animated.Image
-          source={{
-            uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${
-              tripData?.photoRef || ""
-            }&key=${process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY}`,
-          }}
-          style={{ width: "100%", height: imageHeight }}
-        />
+      <Animated.Image
+        source={{
+          uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${
+            tripData?.photoRef || ""
+          }&key=${process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY}`,
+        }}
+        style={{ width: "100%", height: imageHeight }}
+      />
 
       {/* Tab Buttons */}
 
       <Animated.View style={{ opacity: mainTabOpacity }}>
         {/* {showMainTabs && ( */}
-          <TripTabs
-            currentTab={currentTripTab}
-            setCurrentTab={setCurrentTripTab}
-          />
+        <TripTabs
+          currentTab={currentTripTab}
+          setCurrentTab={setCurrentTripTab}
+        />
         {/* )} */}
       </Animated.View>
 
@@ -99,7 +93,7 @@ export default function TripDetails() {
           shadowOpacity: 0.2,
           shadowRadius: 29 / 2,
           opacity: smallTabOpacity,
-          display: smallTabOpacity === 1 ? 'none' : 'flex',
+          display: smallTabOpacity === 1 ? "none" : "flex",
         }}
       >
         <Animated.View
@@ -108,17 +102,17 @@ export default function TripDetails() {
             justifyContent: "center",
             alignItems: "center",
             width: "100%",
-            display: smallTabOpacity === 0 ? 'none' : 'flex'
+            display: smallTabOpacity === 0 ? "none" : "flex",
           }}
         >
-            <Text
-              style={{
-                fontFamily: "open-sans-bold",
-                textAlign: "center",
-              }}
-            >
-              Trip to {tripData?.tripData?.trip?.destination}
-            </Text>
+          <Text
+            style={{
+              fontFamily: "open-sans-bold",
+              textAlign: "center",
+            }}
+          >
+            Trip to {tripData?.tripData?.trip?.destination}
+          </Text>
         </Animated.View>
         <View style={{ flexDirection: "row" }}>
           <View style={{ marginVertical: 10, marginLeft: 20 }}>
@@ -133,60 +127,60 @@ export default function TripDetails() {
               alignItems: "center",
               margin: 10,
               opacity: smallTabOpacity,
-              display: smallTabOpacity === 0 ? 'none' : 'flex'
+              display: smallTabOpacity === 0 ? "none" : "flex",
             }}
           >
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 10,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  margin: 10,
-                  elevation: 7,
-                }}
-              >
-                {tripDetailTabs.map((tripTab, index) => {
-                  let icon;
-                  if (currentTripTab === tripTab.name) {
-                    icon = tripDetailTabs[index].getIcon(Colors.WHITE);
-                  } else {
-                    icon = tripDetailTabs[index].getIcon(Colors.PRIMARY);
-                  }
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                margin: 10,
+                elevation: 7,
+              }}
+            >
+              {tripDetailTabs.map((tripTab, index) => {
+                let icon;
+                if (currentTripTab === tripTab.name) {
+                  icon = tripDetailTabs[index].getIcon(Colors.WHITE);
+                } else {
+                  icon = tripDetailTabs[index].getIcon(Colors.PRIMARY);
+                }
 
-                  return (
-                    <PrimaryButton
-                      key={tripTab.id}
-                      style={{
-                        width: "25%",
-                        borderRadius: 10,
-                        backgroundColor:
-                          currentTripTab === tripTab.name
-                            ? Colors.PRIMARY
-                            : Colors.WHITE,
-                        shadowColor: "rgba(100, 100, 111, 1)",
-                        shadowOffset: { width: 0, height: 7 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 29 / 2,
-                        // elevation: 7,
-                        borderWidth: 1,
-                        borderColor: Colors.PRIMARY,
-                        padding: 5,
-                      }}
-                      onPress={() => setCurrentTripTab(tripTab.name)}
-                      labelStyle={{
-                        fontSize: 10,
-                        color:
-                          currentTripTab === tripTab.name
-                            ? Colors.WHITE
-                            : Colors.PRIMARY,
-                      }}
-                    >
-                      {tripTab.name}
-                    </PrimaryButton>
-                  );
-                })}
-              </View>
+                return (
+                  <PrimaryButton
+                    key={tripTab.id}
+                    style={{
+                      width: "25%",
+                      borderRadius: 10,
+                      backgroundColor:
+                        currentTripTab === tripTab.name
+                          ? Colors.PRIMARY
+                          : Colors.WHITE,
+                      shadowColor: "rgba(100, 100, 111, 1)",
+                      shadowOffset: { width: 0, height: 7 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 29 / 2,
+                      // elevation: 7,
+                      borderWidth: 1,
+                      borderColor: Colors.PRIMARY,
+                      padding: 5,
+                    }}
+                    onPress={() => setCurrentTripTab(tripTab.name)}
+                    labelStyle={{
+                      fontSize: 10,
+                      color:
+                        currentTripTab === tripTab.name
+                          ? Colors.WHITE
+                          : Colors.PRIMARY,
+                    }}
+                  >
+                    {tripTab.name}
+                  </PrimaryButton>
+                );
+              })}
+            </View>
           </Animated.View>
         </View>
       </Animated.View>
@@ -204,9 +198,11 @@ export default function TripDetails() {
             tripId={id}
           />
         ) : currentTripTab === tripDetailTabs[1].name ? (
-          <TripItinerary
-            itineraryData={tripData?.tripData?.trip.itinerary || []}
-          />
+            <TripItinerary
+              itineraryData={tripData?.tripData?.trip.itinerary || []}
+              tripLandmarks={tripData?.tripData?.trip?.landmarks || []}
+              tripId={tripData?.docId || 0}
+            />
         ) : (
           <TripAdvisor />
         )}

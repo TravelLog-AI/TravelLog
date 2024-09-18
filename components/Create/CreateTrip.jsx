@@ -43,7 +43,7 @@ export default function CreateTrip({ onClose }) {
       setIsOpenGeneratingAI(true);
       const parsedStartDate = new Date(startDate);
       const parsedEndDate = new Date(endDate);
-      
+
       const FINAL_PROMPT = AI_PROMPT.replace(
         "{departureLocation}",
         userData?.address?.name
@@ -69,7 +69,7 @@ export default function CreateTrip({ onClose }) {
         tripData: tripRes, // AI Result
         createdAt,
         photoRef,
-        coordinates: address.coordinates
+        coordinates: address.coordinates,
       });
 
       setIsOpenGeneratingAI(false);
