@@ -19,18 +19,16 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../config/firebase.config";
 import { UserContext } from "../../context/UserContext";
 import GeneratingAIScreen from "./GeneratingAIScreen";
-import { GetPhotoRef } from "../../utils/googleMap";
+import { fetchPlaceDetails, fetchPlaceId, GetPhotoRef } from "../../utils/googleMap";
 
 export default function CreateTrip({ onClose }) {
   const [address, setAddress] = useState();
   const [isSelectPlaceOpen, setIsSelectPlaceOpen] = useState(false);
   const [isSelectDateOpen, setIsSelectDateOpen] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
   const [isOpenGeneratingAI, setIsOpenGeneratingAI] = useState(false);
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [numberOfTravelers, setNumberOfTravelers] = useState(1);
-  // const [tripData, setTripData] = useState(null);
   const [selectedBudget, setSelectedBudget] = useState("Cheap");
 
   const router = useRouter();
@@ -63,10 +61,37 @@ export default function CreateTrip({ onClose }) {
       // Get photo ref to display it
       const photoRef = await GetPhotoRef(address.name);
 
+      // Fetch place details for each place in itinerary
+      const newItinerary = [];
+
+      for (const itineraryDay of tripRes.trip.itinerary) {
+        const newItineraryActivities = [];
+        for (const activity of itineraryDay.activities) {
+          const placeId = await fetchPlaceId(activity.name);
+          const placeDetails = await fetchPlaceDetails(placeId);
+          const newActivity = {
+            ...activity,
+            opening_hours: placeDetails?.current_opening_hours || {},
+            types: placeDetails?.types || [],
+            url: placeDetails?.url || "",
+            rating: {
+              rating: placeDetails?.rating || 0,
+              totalRating: placeDetails?.user_ratings_total || 0,
+            },
+          };
+          console.log({placeDetails, name: activity.name}, 'place details');
+          newItineraryActivities.push(newActivity);
+        }
+
+        newItinerary.push({activities: newItineraryActivities, ...itineraryDay});
+      }
+
+      const {trip} = tripRes;
+      
       // Add trip to DB
       const newTripDoc = await addDoc(tripsCollection, {
         userId: userData.docId,
-        tripData: tripRes, // AI Result
+        tripData: { trip: {...trip, itinerary: newItinerary}}, // AI Result
         createdAt,
         photoRef,
         coordinates: address.coordinates,

@@ -61,7 +61,13 @@ export default function TripDetails() {
     );
 
   return (
-    <View style={{ height: "100%", backgroundColor: Colors.WHITE }}>
+    <View
+      style={{
+        minHeight: "100%",
+        backgroundColor: Colors.WHITE,
+        paddingBottom: "50%",
+      }}
+    >
       <Animated.Image
         source={{
           uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${
@@ -198,11 +204,11 @@ export default function TripDetails() {
             tripId={id}
           />
         ) : currentTripTab === tripDetailTabs[1].name ? (
-            <TripItinerary
-              itineraryData={tripData?.tripData?.trip.itinerary || []}
-              tripLandmarks={tripData?.tripData?.trip?.landmarks || []}
-              tripId={tripData?.docId || 0}
-            />
+          <TripItinerary
+            itineraryData={tripData?.tripData?.trip.itinerary || []}
+            tripLandmarks={tripData?.tripData?.trip?.landmarks || []}
+            tripId={tripData?.docId || 0}
+          />
         ) : (
           <TripAdvisor />
         )}
