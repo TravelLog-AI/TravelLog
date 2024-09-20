@@ -40,6 +40,20 @@ export default function TripDetails() {
     extrapolate: 'clamp'
   });
 
+  useEffect(() => {
+    const scrollListener = scrollY.addListener((value) => {
+      const currentOpacity = smallTabOpacity.__getValue();
+      if (currentOpacity > 0) {
+        setShowSmallTabs(true);
+      } else {
+        setShowSmallTabs(false)
+      }
+    });
+
+    return () => {
+      scrollY.removeListener(scrollListener);
+    }
+  }, [scrollY]);
 
   // Set up the listener in `useEffect`
   useEffect(() => {
@@ -76,22 +90,25 @@ export default function TripDetails() {
         }}
         style={{ width: "100%", height: imageHeight }}
       />
+      <SafeAreaView style={{ position: 'absolute', zIndex: 101, marginHorizontal: 20 }}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Feather name="home" size={24} color={Colors.PRIMARY} />
+        </TouchableOpacity>
+      </SafeAreaView>
 
       {/* Tab Buttons */}
 
-      <Animated.View style={{ opacity: mainTabOpacity }}>
-        {/* {showMainTabs && ( */}
+      <Animated.View style={{ opacity: mainTabOpacity, display: !showSmallTabs ? "flex" : "none" }}>
         <TripTabs
           currentTab={currentTripTab}
           setCurrentTab={setCurrentTripTab}
         />
-        {/* )} */}
       </Animated.View>
 
       <Animated.View
         style={{
           zIndex: 100, // Ensure it's above other elements
-          backgroundColor: showSmallTabs ? Colors.WHITE : "transparent",
+          backgroundColor: Colors.WHITE,
           width: "100%",
           flexDirection: "column",
           shadowColor: "rgba(100, 100, 111, 1)",
@@ -99,7 +116,8 @@ export default function TripDetails() {
           shadowOpacity: 0.2,
           shadowRadius: 29 / 2,
           opacity: smallTabOpacity,
-          display: smallTabOpacity === 1 ? "none" : "flex",
+          display: showSmallTabs ? "flex" : "none",
+          paddingTop: 60,
         }}
       >
         <Animated.View
@@ -108,7 +126,7 @@ export default function TripDetails() {
             justifyContent: "center",
             alignItems: "center",
             width: "100%",
-            display: smallTabOpacity === 0 ? "none" : "flex",
+            display: showSmallTabs ? "flex" : "none",
           }}
         >
           <Text
@@ -120,12 +138,12 @@ export default function TripDetails() {
             Trip to {tripData?.tripData?.trip?.destination}
           </Text>
         </Animated.View>
-        <View style={{ flexDirection: "row" }}>
-          <View style={{ marginVertical: 10, marginLeft: 20 }}>
+        {/* <View style={{ flexDirection: "row" }}> */}
+          {/* <View style={{ marginVertical: 10, marginLeft: 20 }}>
             <TouchableOpacity onPress={() => router.back()}>
               <Feather name="home" size={24} color={Colors.PRIMARY} />
             </TouchableOpacity>
-          </View>
+          </View> */}
           <Animated.View
             style={{
               flexDirection: "row",
@@ -133,7 +151,7 @@ export default function TripDetails() {
               alignItems: "center",
               margin: 10,
               opacity: smallTabOpacity,
-              display: smallTabOpacity === 0 ? "none" : "flex",
+              display: showSmallTabs ? "flex" : "none",
             }}
           >
             <View
@@ -188,7 +206,7 @@ export default function TripDetails() {
               })}
             </View>
           </Animated.View>
-        </View>
+        {/* </View> */}
       </Animated.View>
 
       <Animated.ScrollView

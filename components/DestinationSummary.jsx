@@ -37,6 +37,7 @@ export default function ({location, style}) {
           margin: 10,
           gap: 10,
           paddingHorizontal: '5%',
+          paddingRight: 50,
         }}
       >
         <EvilIcons name="location" size={20} color={Colors.WHITE} />
@@ -45,6 +46,7 @@ export default function ({location, style}) {
             fontFamily: "open-sans-bold",
             fontSize: 15,
             color: Colors.WHITE,
+            flexWrap: 'wrap'
           }}
         >
           {location}
