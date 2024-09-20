@@ -22,11 +22,12 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
     }
   }, [currentItineraryDate, itineraryData]);
 
-  const renderDraggableItinerary = ({item, drag, isActive}) => {
+  const renderDraggableItinerary = ({item, drag, isActive, getIndex}) => {
+    const index = getIndex();
     return (
       <ScaleDecorator>
         <ItineraryCard
-          currentIndex={currentItineraryDate}
+          currentIndex={index}
           tripId={tripId}
           activity={item}
           itineraryData={itineraryData}
@@ -60,7 +61,7 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
   
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, paddingBottom: 150 }}>
+    <GestureHandlerRootView style={{ flex: 1, paddingBottom: 200 }}>
       <AddNewItinerary
         open={isOpenAddNewPlace}
         onClose={() => setIsOpenAddNewPlace(false)}

@@ -15,5 +15,7 @@ export const Colors = {
   BLACK: '#000000',
   GREY: '#E0E0E0',
   DARK_GREY: 'grey',
-  LIGHT_BACKGROUND: '#F2F5FC'
+  LIGHT_BACKGROUND: '#F2F5FC',
+  SUCCESS: '#28A745',
+  ERROR: '#DC3545',
 };
