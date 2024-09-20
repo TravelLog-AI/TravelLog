@@ -14,7 +14,15 @@ import { updateSingleDoc } from '../utils/db';
 import { showToast } from '../utils/toast';
 import { updateActivityInItinerary } from '../utils/formatData';
 
-export default function ItineraryCard({currentIndex, tripId, activity, itineraryData, currentDayIndex}) {
+export default function ItineraryCard({
+  currentIndex,
+  drag,
+  isActive,
+  tripId, 
+  activity, 
+  itineraryData, 
+  currentDayIndex,
+}) {
   const [isAddingNote, setIsAddingNote] = useState(false);
   const [isExpandHours, setIsExpandHours] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -58,27 +66,30 @@ export default function ItineraryCard({currentIndex, tripId, activity, itinerary
   return (
     <TouchableHighlight
       onPress={() => setIsAddingNote(!isAddingNote)}
-      style={{ backgroundColor: Colors.LIGHT_BACKGROUND, borderRadius: 20 }}
+      style={{ backgroundColor: Colors.LIGHT_BACKGROUND, borderRadius: 20, margin: 15, }}
+      onLongPress={drag}
+      disabled={isActive}
     >
       <View
         style={{
           display: "flex",
           flexDirection: "row",
           padding: 15,
-          paddingRight: 30,
+          // paddingRight: 30,
           backgroundColor: Colors.LIGHT_BACKGROUND,
           borderRadius: 20,
           alignItems: "center",
           alignSelf: "flex-start", // Ensure the View only grows to fit its content
           width: "100%",
+          gap: 10,
         }}
         onLayout={(event) => {
           const { height } = event.nativeEvent.layout;
           setParentHeight(height);
         }}
       >
-        <TimeLineComp parentHeight={parentHeight} />
-        <View style={{ marginHorizontal: 20, gap: 10 }}>
+        <TimeLineComp style={{flex: 1}} parentHeight={parentHeight} />
+        <View style={{ marginHorizontal: 20, gap: 10, flex: 8 }}>
           <Text style={{ fontFamily: "open-sans-bold", fontSize: 15 }}>
             {activity.name}
           </Text>
@@ -286,13 +297,16 @@ export default function ItineraryCard({currentIndex, tripId, activity, itinerary
             </View>
           </View>
         </View>
+        {/* <TouchableHighlight style={{flex: 1}}>
+          <MaterialCommunityIcons name="drag" size={24} color="black" />
+        </TouchableHighlight> */}
       </View>
     </TouchableHighlight>
   );
 }
 
 
-const TimeLineComp = ({parentHeight}) => {
+const TimeLineComp = ({parentHeight, style}) => {
 
 
     return (
@@ -303,6 +317,7 @@ const TimeLineComp = ({parentHeight}) => {
           alignItems: "center",
           gap: 5,
           alignSelf: "flex-start",
+          ...style
         }}
       >
         <View style={{ backgroundColor: Colors.PRIMARY, width: 1, height: parentHeight ? parentHeight * 0.35 : 0 }}></View>
