@@ -12,6 +12,7 @@ import { updateSingleDoc } from '../../utils/db';
 import { fetchPlaceDetails } from '../../utils/googleMap';
 import { TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { addActivityInItinerary } from '../../utils/formatData';
 
 export default function AddNewItinerary({
   open,
@@ -63,33 +64,24 @@ export default function AddNewItinerary({
     setAdding({name: place.name, isAdding: true, isSuccess: false});
     try {
       const newPlace = await fetchPlaceDetails(place.place_id);
-      console.log(newPlace, 'new place');
 
-      const updatedItineraryDay = {
-        ...itineraryData[currentItineraryDate],
-        activities: [
-          ...itineraryData[currentItineraryDate].activities,
-          {
-            name: newPlace.name,
-            image_url: '',
-            geo_coordinates: newPlace.geometry.location,
-            ticket_pricing: "Various",
-            travel_time: "",
-            opening_hours: newPlace?.opening_hours || {},
-            best_time_to_visit: "",
-            details: newPlace?.editorial_summary.overview || '',
-            types: newPlace?.types || [],
-          },
-        ],
+      const addedActivityData = {
+        name: newPlace.name,
+        image_url: "",
+        geo_coordinates: newPlace.geometry.location,
+        ticket_pricing: "Various",
+        travel_time: "",
+        opening_hours: newPlace?.opening_hours || {},
+        best_time_to_visit: "",
+        details: newPlace?.editorial_summary.overview || "",
+        types: newPlace?.types || [],
       };
 
-      const newItinerary = itineraryData.map((itineraryDay, index) => {
-        if (index === currentItineraryDate) {
-          return updatedItineraryDay;
-        }
-        
-        return itineraryDay;
-      });
+      const newItinerary = addActivityInItinerary(
+        addedActivityData,
+        itineraryData,
+        currentItineraryDate
+      );
 
       await updateSingleDoc('Trips', tripId, {'tripData.trip.itinerary': [...newItinerary]});
 
@@ -97,6 +89,7 @@ export default function AddNewItinerary({
       setTimeout(() => {
         setAdding({...adding, isSuccess: false});
       }, 5000);
+      onClose();
     } catch (error) {
       console.log("Error adding place: ", error);
       showToast("error", "There was an error", error);

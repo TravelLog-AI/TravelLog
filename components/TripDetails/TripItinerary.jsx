@@ -92,7 +92,16 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
         <View style={{ padding: 20, gap: 10 }}>
           {dayActivities.length > 0 &&
             dayActivities.map((activity, index) => {
-              return <ItineraryCard key={index} activity={activity} />;
+              return (
+                <ItineraryCard
+                  key={index}
+                  activity={activity}
+                  itineraryData={itineraryData}
+                  currentDayIndex={currentItineraryDate}
+                  tripId={tripId}
+                  currentIndex={index}
+                />
+              );
             })}
         </View>
 
