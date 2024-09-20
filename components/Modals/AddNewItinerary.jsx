@@ -8,8 +8,6 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { Colors } from '../../constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { showToast } from '../../utils/toast';
-import { addDoc, collection, updateDoc } from 'firebase/firestore';
-import { db } from '../../config/firebase.config';
 import { updateSingleDoc } from '../../utils/db';
 import { fetchPlaceDetails } from '../../utils/googleMap';
 import { TouchableOpacity } from 'react-native';
@@ -23,7 +21,7 @@ export default function AddNewItinerary({
   tripId,
   currentItineraryDate,
 }) {
-    const [adding, setAdding] = useState({name: '', isAdding: false});
+    const [adding, setAdding] = useState({name: '', isAdding: false, isSuccess: false});
   const [landmarks, setTripLandmarks] = useState([...tripLandmarks]);
 
   useEffect(() => {
@@ -62,9 +60,10 @@ export default function AddNewItinerary({
   };
 
   const handleAddPlace = async (place) => {
-    setAdding({name: place.name, isAdding: true});
+    setAdding({name: place.name, isAdding: true, isSuccess: false});
     try {
       const newPlace = await fetchPlaceDetails(place.place_id);
+      console.log(newPlace, 'new place');
 
       const updatedItineraryDay = {
         ...itineraryData[currentItineraryDate],
@@ -76,35 +75,37 @@ export default function AddNewItinerary({
             geo_coordinates: newPlace.geometry.location,
             ticket_pricing: "Various",
             travel_time: "",
-            opening_hours: newPlace.opening_hours,
+            opening_hours: newPlace?.opening_hours || {},
             best_time_to_visit: "",
-            details: newPlace.editorial_summary.overview,
+            details: newPlace?.editorial_summary.overview || '',
+            types: newPlace?.types || [],
           },
         ],
       };
 
       const newItinerary = itineraryData.map((itineraryDay, index) => {
-            if (index === currentItineraryDate) {
-              return updatedItineraryDay;
-            }
-
-            return itineraryDay;
+        if (index === currentItineraryDate) {
+          return updatedItineraryDay;
+        }
+        
+        return itineraryDay;
       });
 
       await updateSingleDoc('Trips', tripId, {'tripData.trip.itinerary': [...newItinerary]});
 
-      showToast('success', 'Place added successfully', '');
-      setAdding({name: '', isAdding: false});
+      setAdding({...adding, isAdding: false, isSuccess: true});
+      setTimeout(() => {
+        setAdding({...adding, isSuccess: false});
+      }, 5000);
     } catch (error) {
       console.log("Error adding place: ", error);
       showToast("error", "There was an error", error);
-      setAdding({name: '', isAdding: false});
+      setAdding({...adding, isAdding: false, isSuccess: false});
     }
   };
 
   return (
     <View>
-      <Toast />
       <Modal visible={open} style={[modalStyles.container, { zIndex: 100 }]}>
         <SafeAreaView>
           <CloseModalButton onPress={onClose} />
@@ -155,6 +156,8 @@ export default function AddNewItinerary({
                   >
                     {adding.name === landmark.name && adding.isAdding ? (
                       <ActivityIndicator size="small" color={Colors.DARK_GREY} />
+                    ) : adding.name === landmark.name && adding.isSuccess ? (
+                      <FontAwesome name="check" size={15} color={Colors.DARK_GREY} />
                     ) : (
                       <FontAwesome
                         name="location-arrow"

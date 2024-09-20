@@ -79,19 +79,19 @@ export default function CreateTrip({ onClose }) {
               totalRating: placeDetails?.user_ratings_total || 0,
             },
           };
-          console.log({placeDetails, name: activity.name}, 'place details');
           newItineraryActivities.push(newActivity);
         }
-
-        newItinerary.push({activities: newItineraryActivities, ...itineraryDay});
+        newItinerary.push({...itineraryDay, activities: newItineraryActivities});
       }
 
       const {trip} = tripRes;
+
+      const tripData = { trip: {...trip, itinerary: newItinerary}};
       
       // Add trip to DB
       const newTripDoc = await addDoc(tripsCollection, {
         userId: userData.docId,
-        tripData: { trip: {...trip, itinerary: newItinerary}}, // AI Result
+        tripData, // AI Result
         createdAt,
         photoRef,
         coordinates: address.coordinates,

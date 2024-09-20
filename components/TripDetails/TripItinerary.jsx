@@ -19,7 +19,7 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
     if (currentItineraryDate >= 0) {
       setDayActivities(itineraryData[currentItineraryDate].activities);
     }
-  }, [currentItineraryDate]);
+  }, [currentItineraryDate, itineraryData]);
 
   return (
     <>

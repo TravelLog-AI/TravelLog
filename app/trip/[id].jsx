@@ -63,9 +63,9 @@ export default function TripDetails() {
   return (
     <View
       style={{
-        minHeight: "100%",
+        height: "100%",
         backgroundColor: Colors.WHITE,
-        paddingBottom: "50%",
+        paddingBottom: 20,
       }}
     >
       <Animated.Image
