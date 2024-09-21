@@ -132,7 +132,6 @@ export default function CreateBlog({onClose, showToast}) {
       <ScrollView horizontal style={{marginTop: 20}}>
         {userTrips.length > 0 ? (
           userTrips.map((trip, index) => {
-            console.log(trip, 'trip')
             return (
               <TouchableOpacity
                 key={index}
@@ -155,7 +154,7 @@ export default function CreateBlog({onClose, showToast}) {
                     right: 10,
                     backgroundColor: Colors.SECONDARY,
                     padding: 5,
-                    borderRadius: 10,
+                    borderRadius: 20,
                   }}
                 >
                   <Text

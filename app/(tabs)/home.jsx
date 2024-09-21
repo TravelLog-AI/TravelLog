@@ -12,9 +12,10 @@ import { showToast } from "../../utils/toast";
 import { GetPhotoRef } from "../../utils/googleMap";
 import { getPhoto } from "../../utils/map";
 import { fetchData } from "../../utils/db";
-import { Timestamp, where } from "firebase/firestore";
+import { collection, doc, onSnapshot, query, Timestamp, where } from "firebase/firestore";
 import NotFound from "../../components/NotFound";
 import BlogPost from "../../components/BlogPost";
+import { db } from "../../config/firebase.config";
 
 export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);

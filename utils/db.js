@@ -9,7 +9,11 @@ export const fetchData = async (collectionName, condition = null) => {
 
     let queryRef;
     if (condition) {
-      queryRef = query(collectionRef, condition);
+      if (condition?.length > 0) {
+        queryRef = query(collectionRef, ...condition);
+      } else {
+        queryRef = query(collectionRef, condition);
+      }
     } else {
       queryRef = query(collectionRef);
     }

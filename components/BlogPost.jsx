@@ -1,11 +1,83 @@
 import { View, Text, Image } from 'react-native'
-import React from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Avatar } from 'react-native-paper'
 import { Colors } from '../constants/Colors'
 import moment from 'moment';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import PrimaryButton from './Primary/Button';
+import { showToast } from '../utils/toast';
+import { UserContext } from '../context/UserContext';
+import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import { fetchData, updateSingleDoc } from '../utils/db';
+import { db } from '../config/firebase.config';
 
 export default function BlogPost({blog}) {
+  const [likes, setLikes] = useState([]);
+
+  const { userData } = useContext(UserContext);
+
+  const isLike = useMemo(() => {
+    const hasLike = likes.some((like) => like.likedBy === userData.docId);
+    
+    return hasLike;
+  
+  }, [likes]);
+
+  useEffect(() => {
+    const likesQuery = query(collection(db, 'Likes'), where('blogId', '==', blog.id));
+    const unsubscribe = onSnapshot(likesQuery, (querySnapshot) => {
+      const likesData = [];
+      querySnapshot.forEach((doc) => {
+        likesData.push(doc.data());
+      });
+  
+      setLikes(likesData);
+    });
+
+    return () => unsubscribe();
+  }, [blog]);
+
+  const handleLike = async () => {
+    try {
+      const likesCollection = collection(db, 'Likes');
+      
+      const createdAt = new Date();
+      await addDoc(likesCollection, {
+        likedBy: userData.docId,
+        likedAt: createdAt,
+        blogId: blog.id,
+      });
+
+      await updateSingleDoc('Blogs', blog.id, {likes: blog.likes + 1});
+
+    } catch (error) {
+      console.log('There was an error: ', error);
+      showToast('error', 'There was an error', error);
+    }
+  };
+
+  const handleUnlike = async () => {
+    try {
+      const likesCollection = collection(db, 'Likes');
+      
+      const likesQuery = query(
+        likesCollection,
+        where("blogId", "==", blog.id),
+        where("likedBy", "==", userData.docId)
+      );
+      const querySnapshot = await getDocs(likesQuery);
+
+      const deletePromise = querySnapshot.docs.map(async (likeDoc) => {
+        await deleteDoc(doc(db, 'Likes', likeDoc.id));
+      });
+
+      await Promise.all(deletePromise);
+      await updateSingleDoc('Blogs', blog.id, {likes: blog.likes - 1});
+    } catch (error) {
+      console.log('There was an error: ', error);
+      showToast('error', 'There was an error', error);
+    }
+  };
 
   return (
     <View style={{ flexDirection: "row", gap: 10, alignItems: "flex-start" }}>
@@ -57,8 +129,8 @@ export default function BlogPost({blog}) {
           <Image
             source={{
               uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${
-            blog?.photoRef || ""
-          }&key=${process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY}`,
+                blog?.photoRef || ""
+              }&key=${process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY}`,
             }}
             style={{
               width: "100%",
@@ -69,8 +141,19 @@ export default function BlogPost({blog}) {
           />
         )}
         <View flexDirection="row" gap={20} alignItems="center" marginTop={10}>
-          <View flexDirection="row" gap={5} alignItems="center">
-            <AntDesign name="like2" size={20} color="grey" />
+          <View flexDirection="row" gap={2} alignItems="center">
+            <PrimaryButton
+              onPress={() => {
+                if (isLike) {
+                  handleUnlike();
+                } else {
+                  handleLike();
+                }
+              }}
+              style={{ padding: 5, backgroundColor: "transparent", margin: 0 }}
+            >
+              <AntDesign name={isLike ? 'like1' : 'like2'} size={20} color={isLike ? Colors.PRIMARY : "grey"} />
+            </PrimaryButton>
             <Text
               style={{
                 fontFamily: "open-sans",
@@ -78,7 +161,7 @@ export default function BlogPost({blog}) {
                 fontSize: 15,
               }}
             >
-              {blog?.likes || 0}
+              {likes.length || 0}
             </Text>
           </View>
           <View flexDirection="row" gap={5} alignItems="center">
