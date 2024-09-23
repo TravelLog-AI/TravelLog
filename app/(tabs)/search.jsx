@@ -6,11 +6,12 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import AutoComplete from '../../components/AutoComplete';
 import { fetchData } from '../../utils/db';
 import { useRouter } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
+import { Divider } from 'react-native-paper';
 
 const durationTime = 200;
 export default function Search() {
   const [selectedOption, setSelectedOption] = useState('City');
-  const [searchKeywords, setSearchKeywords] = useState('');
   const [userList, setUserList] = useState([]);
 
   const router = useRouter();
@@ -22,7 +23,9 @@ export default function Search() {
   const profileTranslateY = useRef(new Animated.Value(selectedOption === 'Profile' ? 0 : -100)).current;
 
   useEffect(() => {
-    fetchUsers();
+    if (userList.length === 0) {
+      fetchUsers();
+    }
   }, []);
 
   // Animation Change
@@ -91,8 +94,8 @@ export default function Search() {
     try {
       const users = await fetchData('Users');
 
-      const userNameList = users.map((user) => user.name);
-      setUserList(userNameList);
+      // const userNameList = users.map((user) => user.name);
+      setUserList(users);
     } catch (error) {
       console.log('There was an error: ', error);
       showToast('error', 'There was an error', error);
@@ -100,12 +103,24 @@ export default function Search() {
   }
 
   const handleOnSelect = (keyword) => {
+    console.log(keyword);
+    if (selectedOption === 'City') {
     router.push(`search/${keyword}`);
+    } else if (selectedOption === 'Profile') {
+      router.push(`view/profile/${keyword}`);
+    }
   }
 
   return (
     <SafeAreaView style={{ backgroundColor: Colors.WHITE }}>
-      <View style={{ flexDirection: "row", justifyContent: "center", gap: 10, marginBottom: 10 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          gap: 10,
+          marginBottom: 10,
+        }}
+      >
         <PrimaryButton
           labelStyle={{
             fontSize: 15,
@@ -167,7 +182,7 @@ export default function Search() {
                 textInputContainer: {
                   borderWidth: 1,
                   borderRadius: 5,
-                  borderColor: Colors.GREY
+                  borderColor: Colors.GREY,
                 },
               }}
               onPress={(data) => {
@@ -185,10 +200,25 @@ export default function Search() {
           }}
         >
           <AutoComplete
-            keywords={searchKeywords}
-            setKeywords={setSearchKeywords}
+            findField="name"
             listToFind={userList}
-            onPress={(item) => handleOnSelect(item)}
+            onPress={(item) => handleOnSelect(item.id)}
+            renderItem={(item, index) => (
+              <TouchableOpacity key={index} onPress={() => handleOnSelect(item.id)}>
+                <View>
+                  <Text
+                    style={{
+                      fontFamily: "open-sans",
+                      fontSize: 15,
+                      padding: 10,
+                    }}
+                  >
+                    {item.name}
+                  </Text>
+                  <Divider />
+                </View>
+              </TouchableOpacity>
+            )}
           />
         </Animated.View>
       ) : (

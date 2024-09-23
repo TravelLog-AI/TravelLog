@@ -6,7 +6,7 @@ import NotFound from '../NotFound';
 
 export default function MyBlogs({blogs}) {
   return (
-    <View style={{ gap: 20 }}>
+    <View style={{ gap: 20, marginHorizontal: 20 }}>
       {blogs.length !== 0 ?
         blogs.map((blog) => {
           return (

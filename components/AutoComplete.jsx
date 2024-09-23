@@ -7,26 +7,27 @@ import { Colors } from '../constants/Colors';
 import { FontAwesome } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 
-export default function AutoComplete({keywords, setKeywords, listToFind, onPress}) {
+export default function AutoComplete({ findField, listToFind, onPress, renderItem}) {
+  const [searchKeywords, setSearchKeywords] = useState('');
+
     const [displayList, setDisplayList] = useState([]);
     
-    const debouncedKeywords = useDebounce(keywords, 1000);
+    const debouncedKeywords = useDebounce(searchKeywords, 1000);
 
     useEffect(() => {
         if (debouncedKeywords) {
-            const filteredList = listToFind.filter((item) => item.includes(debouncedKeywords));
+            const filteredList = listToFind.filter((item) => item[findField].includes(debouncedKeywords));
             setDisplayList(filteredList);
         } else {
             setDisplayList([]);
         }
     }, [debouncedKeywords]);
-
     
   return (
     <View>
         <TextInput 
-            value={keywords}
-            onChangeText={(text) => setKeywords(text)}
+            value={searchKeywords}
+            onChangeText={(text) => setSearchKeywords(text)}
             style={{
               marginTop: 10,
               backgroundColor: Colors.WHITE,
@@ -43,20 +44,21 @@ export default function AutoComplete({keywords, setKeywords, listToFind, onPress
         {
             displayList.length > 0 ? displayList.map((item, index) => {
                 return (
-                  <TouchableOpacity key={index} onPress={() => onPress(item)}>
-                    <View>
-                      <Text
-                        style={{
-                          fontFamily: "open-sans",
-                          fontSize: 15,
-                          padding: 10,
-                        }}
-                      >
-                        {item}
-                      </Text>
-                      <Divider />
-                    </View>
-                  </TouchableOpacity>
+                  <>{renderItem(item, index)}</>
+                  // <TouchableOpacity key={index} onPress={() => onPress(item)}>
+                  //   <View>
+                  //     <Text
+                  //       style={{
+                  //         fontFamily: "open-sans",
+                  //         fontSize: 15,
+                  //         padding: 10,
+                  //       }}
+                  //     >
+                  //       {item}
+                  //     </Text>
+                  //     <Divider />
+                  //   </View>
+                  // </TouchableOpacity>
                 );
             }) : (
                 <NotFound text="No Results"/>

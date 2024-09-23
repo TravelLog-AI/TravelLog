@@ -280,7 +280,7 @@ export default function Home() {
             gap: 20,
             paddingBottom: 100,
             marginHorizontal: 20,
-            marginRight: 50,
+            // marginRight: 50,
           }}
         >
           {topBlogs.length > 0 ? (

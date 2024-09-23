@@ -80,7 +80,7 @@ export default function BlogPost({blog}) {
   };
 
   return (
-    <View style={{ flexDirection: "row", gap: 10, alignItems: "flex-start" }}>
+    <View style={{ flexDirection: "row", gap: 10, alignItems: "flex-start", paddingRight: 50 }}>
       <Avatar.Text size={30} label="B" />
 
       <View>
@@ -101,18 +101,21 @@ export default function BlogPost({blog}) {
         </View>
 
         {/* Post Heading */}
-        <Text
-          style={{
-            fontFamily: "open-sans-bold",
-            fontSize: 20,
-            marginVertical: 10,
-          }}
-        >
-          {blog?.title}
-        </Text>
-        <Text style={{ fontFamily: "open-sans", fontSize: 15 }}>
-          {blog?.description}
-        </Text>
+        <View>
+          <Text
+            style={{
+              fontFamily: "open-sans-bold",
+              fontSize: 20,
+              marginVertical: 10,
+            }}
+          >
+            {blog?.title}
+          </Text>
+          <Text style={{ fontFamily: "open-sans", fontSize: 15 }}>
+            {blog?.description}
+          </Text>
+
+        </View>
         {blog?.imageURL ? (
           <Image
             source={{

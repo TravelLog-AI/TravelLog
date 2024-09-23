@@ -45,14 +45,14 @@ export const tripDetailTabs = [
 export const profileTabs = [
   {
     id: 1,
-    name: "My Trips",
+    name: "Trips",
     getIcon: (color) => (
       <FontAwesome name="bus" size={20} color={color} />
     ),
   },
   {
     id: 2,
-    name: "My Blogs",
+    name: "Blogs",
     getIcon: (color) => (
       <MaterialCommunityIcons name="post-outline" size={24} color={color} />
     ),
