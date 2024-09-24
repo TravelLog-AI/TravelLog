@@ -23,6 +23,7 @@ export default function ItineraryCard({
   activity, 
   itineraryData, 
   currentDayIndex,
+  isOwner
 }) {
   const [isAddingNote, setIsAddingNote] = useState(false);
   const [isExpandHours, setIsExpandHours] = useState(false);
@@ -126,15 +127,27 @@ export default function ItineraryCard({
   }
 
   return (
-    <Swipeable renderRightActions={renderRightAction}>
+    <Swipeable
+      renderRightActions={(progress, dragX) => {
+        if (isOwner) {
+          return renderRightAction(progress, dragX);
+        }
+      }}
+    >
       <TouchableHighlight
-        onPress={() => setIsAddingNote(!isAddingNote)}
+        onPress={() => {
+          if (isOwner) setIsAddingNote(!isAddingNote);
+        }}
         style={{
           backgroundColor: Colors.LIGHT_BACKGROUND,
           borderRadius: 20,
           margin: 15,
         }}
-        onLongPress={drag}
+        onLongPress={() => {
+          if (isOwner) {
+            drag();
+          }
+        }}
         disabled={isActive}
       >
         <View

@@ -108,7 +108,7 @@ export default function ProfileContent({
         style={{ backgroundColor: Colors.WHITE, marginTop: 20, padding: 10 }}
       >
         {currentTab === profileTabs[0].id ? (
-          <MyTrips trips={userTrips} />
+          <MyTrips trips={userTrips} isOwner={isOwner} />
         ) : (
           <MyBlogs blogs={userBlogs} />
         )}

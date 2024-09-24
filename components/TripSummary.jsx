@@ -3,12 +3,16 @@ import React from 'react'
 import { Colors } from '../constants/Colors';
 import { useRouter } from 'expo-router';
 
-export default function TripSummary({trip}) {
-    // console.log(trip, 'trip');
-    // console.log('render');
+export default function TripSummary({trip, isOwner}) {
     const router = useRouter();
   return (
-    <TouchableWithoutFeedback onPress={() => router.push(`trip/${trip.id}`)}>
+    <TouchableWithoutFeedback onPress={() => {
+        if (isOwner) {
+            router.push(`trip/${trip.id}`)
+        } else {
+            router.push(`view/itinerary/${trip.id}`)
+        }
+        }}>
         <View
         style={{
             flexDirection: "row",

@@ -6,5 +6,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "app/view/profile/[id].jsx"  ]
+, "app/view/profile/[id].jsx", "hooks/useDebounce.js"  ]
 }

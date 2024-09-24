@@ -11,7 +11,7 @@ import { FlatList, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { updateSingleDoc } from '../../utils/db';
 import { showToast } from '../../utils/toast';
 
-export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
+export default function TripItinerary({tripId, itineraryData, tripLandmarks, isOwner}) {
   const [currentItineraryDate, setCurrentItineraryDate] = useState(0);
   const [dayActivities, setDayActivities] = useState(itineraryData[0]?.activities || []);
   const [isOpenAddNewPlace, setIsOpenAddNewPlace] = useState(false);
@@ -34,6 +34,7 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
           currentDayIndex={currentItineraryDate}
           drag={drag}
           isActive={isActive}
+          isOwner={isOwner}
         />
       </ScaleDecorator>
     )
@@ -61,7 +62,7 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
   
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, paddingBottom: 200 }}>
+    <GestureHandlerRootView style={{ flex: 1, paddingBottom: isOwner ? 200 : 0 }}>
       <AddNewItinerary
         open={isOpenAddNewPlace}
         onClose={() => setIsOpenAddNewPlace(false)}
@@ -135,7 +136,7 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
-      <PrimaryButton
+      {isOwner && <PrimaryButton
         variant="standard"
         style={{ padding: 10, alignSelf: "flex-end", marginHorizontal: 20 }}
         labelStyle={{ fontSize: 12, fontFamily: "open-sans-medium" }}
@@ -147,7 +148,7 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
         }
       >
         Save Arrangement
-      </PrimaryButton>
+      </PrimaryButton>}
 
       <DraggableFlatList
         data={dayActivities}
@@ -156,7 +157,7 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
         renderItem={renderDraggableItinerary}
       />
 
-      <View
+      {isOwner && <View
         style={{
           display: "flex",
           flexDirection: "row",
@@ -172,7 +173,7 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks}) {
         >
           Add a new place
         </PrimaryButton>
-      </View>
+      </View>}
     </GestureHandlerRootView>
   );
 }

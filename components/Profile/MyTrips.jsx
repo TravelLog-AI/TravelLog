@@ -5,7 +5,7 @@ import { Divider } from 'react-native-paper';
 import PrimaryButton from '../Primary/Button';
 import NotFound from '../NotFound';
 
-export default function MyTrips({trips}) {
+export default function MyTrips({trips, isOwner}) {
 
   return (
     <View style={{ gap: 20 }}>
@@ -13,7 +13,7 @@ export default function MyTrips({trips}) {
         trips.map((trip, index) => {
           return (
             <Fragment key={index}>
-              <TripSummary trip={trip} />
+              <TripSummary trip={trip} isOwner={isOwner} />
               <Divider />
             </Fragment>
           );

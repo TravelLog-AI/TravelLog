@@ -8,6 +8,7 @@ import { FAB } from 'react-native-paper';
 import { getPhoto } from '../utils/map';
 import { updateSingleDoc } from '../utils/db';
 import { arrayUnion } from 'firebase/firestore';
+import NotFound from './NotFound';
 
 const Landmark = ({ place }) => {
   const photoLink = place?.photos
@@ -111,7 +112,7 @@ const LandmarkToAdd = ({ place, handleAdd }) => {
   );
 };
 
-export default function Landmarks({ tripData, coordinates, tripId }) {
+export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
   const [landmarkList, setLandmarkList] = useState([]);
   const [landmarksInItinerary, setLandmarksInItinerary] = useState([]);
 
@@ -197,24 +198,41 @@ export default function Landmarks({ tripData, coordinates, tripId }) {
   }
 
   return (
-    <View style={{ flexDirection: 'column', gap: 15, marginTop: 20, marginBottom: 50 }}>
-      {landmarksInItinerary.length > 0 &&
+    <View
+      style={{
+        flexDirection: "column",
+        gap: 15,
+        marginTop: 20,
+        marginBottom: 50,
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+      }}
+    >
+      {landmarksInItinerary.length > 0 ? (
         landmarksInItinerary.map((landmark, index) => {
           return <Landmark key={index} place={landmark} />;
-        })}
+        })
+      ) : (
+        // <View style={{justifyContent: 'center', alignItems: 'center', width: '100%'}}>
+        <NotFound text="No Landmarks Found" />
+        // </View>
+      )}
 
-      <ScrollView horizontal>
-        {landmarkList.length > 0 &&
-          landmarkList.map((landmark, index) => {
-            return (
-              <LandmarkToAdd
-                key={index}
-                place={landmark}
-                handleAdd={() => handleAddLandmark(landmark)}
-              />
-            );
-          })}
-      </ScrollView>
+      {isOwner && (
+        <ScrollView horizontal>
+          {landmarkList.length > 0 &&
+            landmarkList.map((landmark, index) => {
+              return (
+                <LandmarkToAdd
+                  key={index}
+                  place={landmark}
+                  handleAdd={() => handleAddLandmark(landmark)}
+                />
+              );
+            })}
+        </ScrollView>
+      )}
     </View>
   );
 }
