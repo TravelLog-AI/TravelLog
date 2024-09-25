@@ -16,6 +16,8 @@ import { collection, doc, onSnapshot, query, Timestamp, where } from "firebase/f
 import NotFound from "../../components/NotFound";
 import BlogPost from "../../components/BlogPost";
 import { db } from "../../config/firebase.config";
+import { useRouter } from "expo-router";
+import { TouchableHighlight } from "react-native";
 
 export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -24,6 +26,7 @@ export default function Home() {
   );
   const [topDestinations, setTopDestinations] = useState([]);
   const [topBlogs, setTopBlogs] = useState([]);
+  const router = useRouter();
 
   const { userData } = useContext(UserContext);
 
@@ -253,12 +256,13 @@ export default function Home() {
           horizontal
           style={{ display: "flex", flexDirection: "row", gap: 10 }}
         >
-          {/* <DestinationSummary />
-          <DestinationSummary />
-          <DestinationSummary /> */}
           {topDestinations.length > 0 &&
             topDestinations.map((destination, index) => {
-              return <DestinationSummary key={index} location={destination} />;
+              return (
+                <TouchableOpacity onPress={() => router.push(`search/${destination}`)}>
+                  <DestinationSummary key={index} location={destination} />
+                </TouchableOpacity>
+            );
             })}
         </ScrollView>
 

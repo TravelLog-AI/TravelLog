@@ -18,7 +18,7 @@ export default function SearchResult() {
   const [blogs, setBlogs] = useState([]);
     const { keyword } = useLocalSearchParams();
 
-    const roxuter = useRouter();
+    const router = useRouter();
 
     useEffect(() => {
       fetchRelatedBlogs();

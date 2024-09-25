@@ -1,0 +1,6 @@
+module Pods_traveltailor {
+  umbrella header "Pods-traveltailor-umbrella.h"
+
+  export *
+  module * { export * }
+}
