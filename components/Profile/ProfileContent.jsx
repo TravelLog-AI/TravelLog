@@ -9,6 +9,9 @@ import MyTrips from './MyTrips';
 import MyBlogs from './MyBlogs';
 import BackButton from '../BackButton';
 import { useRouter } from 'expo-router';
+import Entypo from '@expo/vector-icons/Entypo';
+import useUploadFile, { IMAGE_TYPE } from '../../hooks/useUploadFile';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 export default function ProfileContent({
     userData,
@@ -18,7 +21,36 @@ export default function ProfileContent({
     isOwner
 }) {
   const [currentTab, setCurrentTab] = useState(profileTabs[0].id);
+  const [imageLink, setImageLink] = useState('');
   const router = useRouter();
+
+  // const { openImagePicker } = useUploadFile(updateImageLink, IMAGE_TYPE.AVATARS);
+
+
+  const updateImageLink = (uri) => {
+    setImageLink(uri)
+  }
+
+  // const choosePhotoFromLib = () => {
+  //   openPicker({
+  //     width: 300,
+  //     height: 400,
+  //     cropping: true,
+  //   }).then((image) => {
+  //     updateImageLink(image.path);
+  //   })
+  // }
+
+  const ImagePicker = () => {
+    const options = {
+      storageOptions: {
+        path: 'image'
+      }
+    }
+    launchImageLibrary(options, response => {
+      console.log(response);
+    })
+  }
 
   return (
     <>
@@ -32,7 +64,22 @@ export default function ProfileContent({
         }}
       >
         {!isOwner && <BackButton onPress={() => router.back()} />}
-        <Avatar.Text size={100} label={userData?.name?.slice(0, 1)} />
+        <View>
+          <Avatar.Text size={100} label={userData?.name?.slice(0, 1)} />
+          <PrimaryButton
+            onPress={ImagePicker}
+            style={{
+              position: "absolute",
+              padding: 8,
+              backgroundColor: Colors.LIGHT_BACKGROUND,
+              zIndex: 100,
+              bottom: 0,
+              right: 0,
+            }}
+          >
+            <Entypo name="edit" size={20} color={Colors.PRIMARY} />
+          </PrimaryButton>
+        </View>
         <Text
           style={{
             fontFamily: "open-sans-bold",

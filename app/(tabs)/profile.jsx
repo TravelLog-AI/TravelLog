@@ -1,12 +1,6 @@
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { Avatar } from "react-native-paper";
-import PrimaryButton from "../../components/Primary/Button";
 import { Colors } from "../../constants/Colors";
-import { TouchableOpacity } from "react-native";
-import MyTrips from "../../components/Profile/MyTrips";
-import { profileTabs } from "../../constants/arrays";
-import MyBlogs from "../../components/Profile/MyBlogs";
 import { showToast } from "../../utils/toast";
 import { fetchData } from "../../utils/db";
 import { where } from "firebase/firestore";
