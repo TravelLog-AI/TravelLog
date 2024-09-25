@@ -1,5 +1,5 @@
-import { View, Text, Image } from 'react-native'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { View, Text, Image, TouchableHighlight, Animated } from 'react-native'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Avatar } from 'react-native-paper'
 import { Colors } from '../constants/Colors'
 import moment from 'moment';
@@ -10,11 +10,17 @@ import { UserContext } from '../context/UserContext';
 import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { fetchData, updateSingleDoc } from '../utils/db';
 import { db } from '../config/firebase.config';
+import { useRouter } from 'expo-router';
 
 export default function BlogPost({blog}) {
   const [likes, setLikes] = useState([]);
 
+  const router = useRouter();
   const { userData } = useContext(UserContext);
+
+  // Animation
+  const scaleValue = useRef(new Animated.Value(1)).current;
+
 
   const isLike = useMemo(() => {
     const hasLike = likes.some((like) => like.likedBy === userData.docId);
@@ -79,7 +85,28 @@ export default function BlogPost({blog}) {
     }
   };
 
+  const handlePressIn = () => {
+    Animated.spring(scaleValue, {
+      toValue: 1.05, // Scale up to 1.05x
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleValue, {
+      toValue: 1, // Scale back to 1x
+      useNativeDriver: true,
+    }).start();
+  };
+
+
+  const directToDetails = () => {
+    router.push(`/blog/${blog.id}`)
+  }
+
   return (
+    <TouchableHighlight onPressIn={handlePressIn} onPressOut={handlePressOut} onPress={directToDetails} underlayColor={Colors.LIGHT_BACKGROUND}>
+      <Animated.View style={{transform: [{scale: scaleValue}]}}>
     <View style={{ flexDirection: "row", gap: 10, alignItems: "flex-start", paddingRight: 50 }}>
       <Avatar.Text size={30} label="B" />
 
@@ -182,5 +209,7 @@ export default function BlogPost({blog}) {
         </View>
       </View>
     </View>
+    </Animated.View>
+    </TouchableHighlight>
   );
 }

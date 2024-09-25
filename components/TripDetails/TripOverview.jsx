@@ -9,12 +9,9 @@ import { overviewSubTabs } from "../../constants/arrays";
 import Landmarks from "../Landmarks";
 import HotelList from "../HotelList";
 
-export default function TripOverview({tripData, coordinates, tripId, isOwner}) {
-  const [currentTab, setCurrentTab] = useState('Flights');
-  
+export const TripOverviewContent = ({tripData}) => {
   return (
-    <View>
-      <Text style={tripDetailsStyle.heading}>Overview</Text>
+    <>
       <Text
         style={[
           tripDetailsStyle.heading,
@@ -59,6 +56,17 @@ export default function TripOverview({tripData, coordinates, tripId, isOwner}) {
           </Text>
         </View>
       </View>
+    </>
+  );
+}
+
+export default function TripOverview({tripData, coordinates, tripId, isOwner}) {
+  const [currentTab, setCurrentTab] = useState('Flights');
+  
+  return (
+    <View>
+      <Text style={tripDetailsStyle.heading}>Overview</Text>
+      <TripOverviewContent tripData={tripData} />
 
       {/* Overview sub tabs */}
       <View

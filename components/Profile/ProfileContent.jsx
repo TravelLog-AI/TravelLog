@@ -7,9 +7,8 @@ import { TouchableOpacity } from 'react-native';
 import { Colors } from '../../constants/Colors';
 import MyTrips from './MyTrips';
 import MyBlogs from './MyBlogs';
-import { modalStyles } from '../Modals/styles';
+import BackButton from '../BackButton';
 import { useRouter } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
 
 export default function ProfileContent({
     userData,
@@ -32,16 +31,7 @@ export default function ProfileContent({
           backgroundColor: Colors.WHITE,
         }}
       >
-        {!isOwner && (
-          <SafeAreaView style={[modalStyles.closeButtonContainer]}>
-            <PrimaryButton
-              onPress={() => router.back()}
-              style={{ borderRadius: "50%", backgroundColor: "transparent" }}
-            >
-              <Feather name="arrow-left" size={30} color={Colors.DARK_GREY} />
-            </PrimaryButton>
-          </SafeAreaView>
-        )}
+        {!isOwner && <BackButton onPress={() => router.back()} />}
         <Avatar.Text size={100} label={userData?.name?.slice(0, 1)} />
         <Text
           style={{

@@ -1,15 +1,13 @@
 import {Animated, View } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Colors } from "../../constants/Colors";
 import TripOverview from "../../components/TripDetails/TripOverview";
 import { tripDetailTabs } from "../../constants/arrays";
 import TripItinerary from "../../components/TripDetails/TripItinerary";
 import TripAdvisor from "../../components/TripDetails/TripAdvisor";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import Feather from "@expo/vector-icons/Feather";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/firebase.config";
-import PrimaryButton from "../../components/Primary/Button";
 import TripHeading from "../../components/TripDetails/TripHeading";
 import useTripScrolling from "../../hooks/useTripScrolling";
 
