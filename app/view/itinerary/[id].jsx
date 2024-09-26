@@ -9,9 +9,11 @@ import TripOverview from '../../../components/TripDetails/TripOverview';
 import { tripDetailTabs } from '../../../constants/arrays';
 import TripItinerary from '../../../components/TripDetails/TripItinerary';
 import TripAdvisor from '../../../components/TripDetails/TripAdvisor';
+import Loading from '../../../components/Loading';
 
 export default function ItineraryView() {
   const [currentTripTab, setCurrentTripTab] = useState("Overview");
+  const [isLoading, setIsLoading] = useState(true);
   const [tripData, setTripData] = useState();
 
   const { id } = useLocalSearchParams();
@@ -23,15 +25,20 @@ export default function ItineraryView() {
   const fetchTripData = async () => {
     try {
       const response = await fetchDoc('Trips', id);
-      console.log(response,'response');
 
       setTripData(response.docData);
+      setIsLoading(false);
     } catch (error) {
       console.log('There was an error: ', error);
       showToast('error','There was an error in fetching data: ', error);
+      setIsLoading(false);
     }
-   
   }
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <View
       style={{
@@ -45,10 +52,7 @@ export default function ItineraryView() {
         currentTripTab={currentTripTab}
         setCurrentTripTab={setCurrentTripTab}
       />
-
-      {/* <Text style={{ fontFamily: "open-sans-bold", fontSize: 20 }}>
-        Landmarks
-      </Text> */}
+      
       {currentTripTab === tripDetailTabs[0].name ? (
         <ScrollView>
           <TripOverview

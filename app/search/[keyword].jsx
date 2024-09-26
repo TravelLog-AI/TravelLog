@@ -1,40 +1,44 @@
-import { View, Text, SafeAreaView, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useLocalSearchParams, useRouter } from 'expo-router'
-import PrimaryButton from '../../components/Primary/Button';
-import { modalStyles } from '../../components/Modals/styles';
-import { Colors } from '../../constants/Colors';
-import { Feather } from '@expo/vector-icons';
-import { primaryStyles } from '../../styles/primary';
-import Toast from 'react-native-toast-message';
-import { showToast } from '../../utils/toast';
-import { fetchData } from '../../utils/db';
-import { where } from 'firebase/firestore';
-import NotFound from '../../components/NotFound';
-import BlogPost from '../../components/BlogPost';
-import { Divider } from 'react-native-paper';
+import { View, Text, SafeAreaView, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import PrimaryButton from "../../components/Primary/Button";
+import { modalStyles } from "../../components/Modals/styles";
+import { Colors } from "../../constants/Colors";
+import { Feather } from "@expo/vector-icons";
+import { primaryStyles } from "../../styles/primary";
+import Toast from "react-native-toast-message";
+import { showToast } from "../../utils/toast";
+import { fetchData } from "../../utils/db";
+import { where } from "firebase/firestore";
+import NotFound from "../../components/NotFound";
+import BlogPost from "../../components/BlogPost";
+import { Divider } from "react-native-paper";
 
 export default function SearchResult() {
   const [blogs, setBlogs] = useState([]);
-    const { keyword } = useLocalSearchParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const { keyword } = useLocalSearchParams();
 
-    const router = useRouter();
+  const router = useRouter();
 
-    useEffect(() => {
-      fetchRelatedBlogs();
-    }, []);
+  useEffect(() => {
+    fetchRelatedBlogs();
+    setIsLoading(false);
+  }, []);
 
+  const fetchRelatedBlogs = async () => {
+    try {
+      const relatedBlogs = await fetchData(
+        "Blogs",
+        where("destination", "==", keyword)
+      );
 
-    const fetchRelatedBlogs = async () => {
-      try {
-        const relatedBlogs = await fetchData('Blogs', where('destination', '==', keyword));
-
-        setBlogs(relatedBlogs);
-      } catch (error) {
-        console.log('There was an error', error);
-        showToast("error", "There was an error", error);
-      }
+      setBlogs(relatedBlogs);
+    } catch (error) {
+      console.log("There was an error", error);
+      showToast("error", "There was an error", error);
     }
+  };
 
   return (
     <SafeAreaView style={{ flexDirection: "column" }}>
@@ -66,11 +70,14 @@ export default function SearchResult() {
         {blogs.length > 0 ? (
           blogs.map((blog, index) => {
             return (
-              <View key={index} style={{flexDirection: 'column', marginBottom: 10, gap: 10}}>
+              <View
+                key={index}
+                style={{ flexDirection: "column", marginBottom: 10, gap: 10 }}
+              >
                 <BlogPost blog={blog} />
                 <Divider />
               </View>
-          );
+            );
           })
         ) : (
           <NotFound text="No Blogs Found" />

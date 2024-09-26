@@ -18,9 +18,11 @@ import BlogPost from "../../components/BlogPost";
 import { db } from "../../config/firebase.config";
 import { useRouter } from "expo-router";
 import { TouchableHighlight } from "react-native";
+import Loading from "../../components/Loading";
 
 export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [photoURL, setPhotoURL] = useState(
     "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ="
   );
@@ -126,9 +128,11 @@ export default function Home() {
 
       const sortedTopBlogs = sortBlogsByLikesAndViews(blogs);
       setTopBlogs(sortedTopBlogs);
+      setIsLoading(false);
     } catch (error) {
       console.log("There was an error: ", error);
       showToast("error", "There was an error", error);
+      setIsLoading(false);
     }
   };
 
@@ -147,12 +151,14 @@ export default function Home() {
     return sortedBlogs;
   };
 
+  if (isLoading) {
+    return <Loading />
+  }
+
   return (
     <View>
       <ScrollView
-        // keyboardShouldPersistTaps="always"
         contentContainerStyle={{
-          // height: "100%",
           backgroundColor: Colors.WHITE,
         }}
       >

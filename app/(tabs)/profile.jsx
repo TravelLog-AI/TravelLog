@@ -1,21 +1,17 @@
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { Avatar } from "react-native-paper";
-import PrimaryButton from "../../components/Primary/Button";
 import { Colors } from "../../constants/Colors";
-import { TouchableOpacity } from "react-native";
-import MyTrips from "../../components/Profile/MyTrips";
-import { profileTabs } from "../../constants/arrays";
-import MyBlogs from "../../components/Profile/MyBlogs";
 import { showToast } from "../../utils/toast";
 import { fetchData } from "../../utils/db";
 import { where } from "firebase/firestore";
 import { UserContext } from "../../context/UserContext";
 import EditProfile from "../../components/Modals/EditProfile";
 import ProfileContent from "../../components/Profile/ProfileContent";
+import Loading from "../../components/Loading";
 
 export default function Profile() {
   const [isOpenEditProfile, setIsOpenEditProfile] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [userBlogs, setUserBlogs] = useState([]);
   const [userTrips, setUserTrips] = useState([]);
 
@@ -25,7 +21,6 @@ export default function Profile() {
     if (userData) {
       fetchUserBlogs();
       fetchUserTrips();
-      
     }
   }, [userData]);
 
@@ -48,11 +43,17 @@ export default function Profile() {
       );
 
       setUserTrips(fetchedTrips);
+      setIsLoading(false);
     } catch (error) {
       console.log("There was an error: ", error);
       showToast("error", "There was an error", error);
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <Loading />
+  }
 
   return (
     <ScrollView style={{ backgroundColor: Colors.LIGHT_BACKGROUND }}>

@@ -15,8 +15,6 @@ const animationTime = 100;
 export default function TripDetails() {
   const [currentTripTab, setCurrentTripTab] = useState("Overview");
   const [tripData, setTripData] = useState();
-    // Track scroll position
-  // const [showSmallTabs, setShowSmallTabs] = useState(false);
   const router = useRouter();
 
   const { id } = useLocalSearchParams();

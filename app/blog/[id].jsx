@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import TripHeading from '../../components/TripDetails/TripHeading';
@@ -17,6 +17,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { UserContext } from "../../context/UserContext";
 import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '../../config/firebase.config';
+import Loading from '../../components/Loading';
 
 const OverviewBlog = ({blogData, tripId}) => {
   return (
@@ -63,9 +64,11 @@ const OverviewBlog = ({blogData, tripId}) => {
 }
 
 export default function BlogDetails() {
-  const [likes, setLikes] = useState([]);
   const [blogData, setBlogData] = useState();
   const [currentTripTab, setCurrentTripTab] = useState("Overview");
+  const [likes, setLikes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const { id } = useLocalSearchParams();
   const { userData } = useContext(UserContext);
 
@@ -101,6 +104,7 @@ export default function BlogDetails() {
     }, [blogData]);
 
     const fetchTripData = async () => {
+      setIsLoading(true);
       try {
         const blogResponse = await fetchDoc("Blogs", id);
         const tripResponse = await fetchDoc(
@@ -112,14 +116,15 @@ export default function BlogDetails() {
           ...blogResponse.docData,
           tripData: tripResponse.docData,
         });
+        setIsLoading(false);
       } catch (error) {
         console.log("There was an error: ", error);
         showToast("error", "Something went wrong. Please try again.", error);
+        setIsLoading(false);
       }
     };
 
     const handleAddView = async () => {
-      console.log(blogData.views, 'viewas')
       try {
         await updateSingleDoc("Blogs", id, {
           views: blogData.views + 1,
@@ -171,6 +176,12 @@ export default function BlogDetails() {
         showToast("error", "There was an error", error);
       }
     };
+
+    if (isLoading) {
+      return (
+        <Loading />
+      );
+    }
 
   return (
     <View style={{ height: "100%" }}>
