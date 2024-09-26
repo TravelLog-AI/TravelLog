@@ -1,101 +1,131 @@
-import { View, Text, Image, ScrollView } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Colors } from '../constants/Colors';
-import { showToast } from '../utils/toast';
-import axios from 'axios';
-import { googlePlaceAPI } from '../constants/env';
-import { FAB } from 'react-native-paper';
-import { getPhoto } from '../utils/map';
-import { updateSingleDoc } from '../utils/db';
-import { arrayUnion } from 'firebase/firestore';
-import NotFound from './NotFound';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableHighlight,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { Colors } from "../constants/Colors";
+import { showToast } from "../utils/toast";
+import axios from "axios";
+import { googlePlaceAPI } from "../constants/env";
+import { FAB } from "react-native-paper";
+import { getPhoto } from "../utils/map";
+import { updateSingleDoc } from "../utils/db";
+import { arrayUnion } from "firebase/firestore";
+import NotFound from "./NotFound";
+import { fetchPlaceDetails } from "../utils/googleMap";
 
 const Landmark = ({ place }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const photoLink = place?.photos
     ? getPhoto(place?.photos[0]?.photo_reference)
-    : require('../assets/images/not_found.jpg');
+    : require("../assets/images/not_found.jpg");
 
   return (
-    <View style={{ width: '100%', height: 200 }}>
-      <Image
-        source={{ uri: photoLink }}
-        style={{
-          width: '100%',
-          height: '100%',
-          borderRadius: 20,
-          opacity: 0.8,
-        }}
-      />
+    <TouchableHighlight style={{ width: "100%", alignSelf: "flex-start" }}>
       <View
         style={{
-          position: 'absolute',
-          top: 10,
-          left: 10,
-          backgroundColor: Colors.WHITE,
-          paddingVertical: 5,
-          paddingHorizontal: 10,
-          borderRadius: 10,
+          width: "100%",
+          alignSelf: "flex-start",
+          backgroundColor: Colors.LIGHT_BACKGROUND,
+          height: undefined, // This allows the height to adjust to content
+          flexGrow: 1, // Allows the content to grow as needed
         }}
       >
-        <Text
-          style={{
-            fontFamily: 'open-sans-bold',
-            color: Colors.PRIMARY,
-            fontSize: 15,
-          }}
-        >
-          ⭐ {place.rating}
-        </Text>
+        <View style={{ width: "100%", height: 200 }}>
+          <Image
+            source={{ uri: photoLink }}
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: 20,
+              opacity: 0.8,
+            }}
+          />
+          <View
+            style={{
+              position: "absolute",
+              top: 10,
+              left: 10,
+              backgroundColor: Colors.WHITE,
+              paddingVertical: 5,
+              paddingHorizontal: 10,
+              borderRadius: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "open-sans-bold",
+                color: Colors.PRIMARY,
+                fontSize: 15,
+              }}
+            >
+              ⭐ {place.rating}
+            </Text>
+          </View>
+          <View
+            style={{
+              position: "absolute",
+              bottom: 10,
+              left: 10,
+              paddingVertical: 5,
+              paddingHorizontal: 15,
+              borderWidth: 1,
+              borderColor: Colors.LIGHT_BACKGROUND,
+              borderRadius: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "open-sans-bold",
+                fontSize: 20,
+                color: Colors.LIGHT_BACKGROUND,
+              }}
+            >
+              {place.name}
+            </Text>
+          </View>
+        </View>
+
+        {/* Additional Place Details */}
+        <View>
+          <Text>Place Details</Text>
+          <Text>Place Details</Text>
+          <Text>Place Details</Text>
+          <Text>Place Details</Text>
+          <Text>Place Details</Text>
+        </View>
       </View>
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 10,
-          left: 10,
-          paddingVertical: 5,
-          paddingHorizontal: 15,
-          borderWidth: 1,
-          borderColor: Colors.LIGHT_BACKGROUND,
-          borderRadius: 10,
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: 'open-sans-bold',
-            fontSize: 20,
-            color: Colors.LIGHT_BACKGROUND,
-          }}
-        >
-          {place.name}
-        </Text>
-      </View>
-    </View>
+    </TouchableHighlight>
   );
 };
 
 const LandmarkToAdd = ({ place, handleAdd }) => {
   const photoLink = place?.photos
     ? getPhoto(place?.photos[0]?.photo_reference)
-    : require('../assets/images/not_found.jpg');
+    : require("../assets/images/not_found.jpg");
 
   return (
     <View
       style={{
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         height: 50,
         marginRight: 10,
         backgroundColor: Colors.LIGHT_BACKGROUND,
-        alignSelf: 'flex-start',
+        alignSelf: "flex-start",
         borderRadius: 10,
       }}
     >
       <Image
         source={{ uri: photoLink }}
-        style={{ width: 40, height: '100%', borderRadius: 10 }}
+        style={{ width: 40, height: "100%", borderRadius: 10 }}
       />
       <View style={{ paddingVertical: 5, paddingHorizontal: 20 }}>
-        <Text style={{ fontFamily: 'open-sans-medium', fontSize: 15 }}>
+        <Text style={{ fontFamily: "open-sans-medium", fontSize: 15 }}>
           {place.name}
         </Text>
       </View>
@@ -122,21 +152,8 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
     }
   }, [coordinates]);
 
-  const fetchLandmarks = async () => {
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${coordinates?.lat},${coordinates?.lng}&radius=5000&type=tourist_attraction&fields=name,rating,formatted_address,editorial_summary,opening_hours,photos&key=${googlePlaceAPI}`
-      );
-      setLandmarkList(response.data.results);
-    } catch (error) {
-      console.log('There was an error: ', error);
-      showToast('error', 'There was an error', error);
-    }
-  };
-
   useEffect(() => {
     if (tripData && landmarkList.length > 0) {
-
       if (tripData?.landmarks && tripData?.landmarks?.length > 0) {
         setLandmarksInItinerary(tripData.landmarks);
         return;
@@ -157,45 +174,78 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
       handleAddLandmarks(landmarkExisted);
     }
   }, [tripData, landmarkList]);
+  const fetchLandmarks = async () => {
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${coordinates?.lat},${coordinates?.lng}&radius=5000&type=tourist_attraction&fields=name,rating,formatted_address,editorial_summary,opening_hours,photos&key=${googlePlaceAPI}`
+      );
+
+      setLandmarkList(response.data.results);
+    } catch (error) {
+      console.log("There was an error: ", error);
+      showToast("error", "There was an error", error);
+    }
+  };
 
   const handleAddLandmarks = async (landmarksToAdd) => {
-    const formatLandmarks = landmarksToAdd.map((landmark) => {
-      const {icon, icon_background_color, icon_mask_base_uri, plus_code, ...restOfData} = landmark;
-      return {...restOfData};
-    })
+    // const formatLandmarks = landmarksToAdd.map((landmark) => {
+    //   const {
+    //     icon,
+    //     icon_background_color,
+    //     icon_mask_base_uri,
+    //     plus_code,
+    //     ...restOfData
+    //   } = landmark;
+    //   return { ...restOfData };
+    // });
 
     try {
-      await updateSingleDoc('Trips', tripId, {
-        'tripData.trip.landmarks': arrayUnion(...formatLandmarks),
+      const detailedLandmarks = await Promise.all(
+        landmarksToAdd.map(async (landmark) => {
+          const detailedLandmark = await fetchPlaceDetails(landmark.place_id);
+          const dataToAdd = {
+            name: detailedLandmark.name,
+            photos: detailedLandmark.photos,
+            reference: detailedLandmark.reference,
+            geo_coordinates: detailedLandmark.geometry.location,
+            opening_hours: detailedLandmark?.opening_hours || {},
+            best_time_to_visit: "",
+            details: detailedLandmark?.editorial_summary.overview || "",
+            types: detailedLandmark?.types || [],
+            rating: detailedLandmark?.rating || 0,
+          };
+        })
+      )
+      await updateSingleDoc("Trips", tripId, {
+        "tripData.trip.landmarks": arrayUnion(...detailedLandmarks),
       });
     } catch (error) {
-      console.log('There was an error: ', error);
-      showToast('error', 'There was an error', error);
+      console.log("There was an error: ", error);
+      showToast("error", "There was an error", error);
     }
   };
 
   const handleAddLandmark = (landmark) => {
     const isLandmarkValid = checkIsLandmarkValid(landmark);
     if (!isLandmarkValid) {
-      showToast('error', 'Landmark Already Existed' ,'');
+      showToast("error", "Landmark Already Existed", "");
       return;
     }
     handleAddLandmarks([landmark]);
   };
 
-
   const checkIsLandmarkValid = (landmark) => {
-    console.log(tripData, 'tripData');
+    console.log(tripData, "tripData");
     if (!tripData?.landmarks || tripData?.landmarks?.length === 0) {
       return true;
     }
 
     const isAlreadyExist = tripData.landmarks.find((existingLandmark) => {
-      return existingLandmark.name === landmark.name
+      return existingLandmark.name === landmark.name;
     });
 
     return !isAlreadyExist;
-  }
+  };
 
   return (
     <View

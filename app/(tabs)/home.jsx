@@ -17,7 +17,6 @@ import NotFound from "../../components/NotFound";
 import BlogPost from "../../components/BlogPost";
 import { db } from "../../config/firebase.config";
 import { useRouter } from "expo-router";
-import { TouchableHighlight } from "react-native";
 import Loading from "../../components/Loading";
 
 export default function Home() {
