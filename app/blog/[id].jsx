@@ -34,7 +34,7 @@ const OverviewBlog = ({blogData, tripId}) => {
             fontSize: 20,
           }}
         >
-          {blogData.title}
+          {blogData?.title}
         </Text>
         <Text
           style={{
@@ -42,7 +42,7 @@ const OverviewBlog = ({blogData, tripId}) => {
             fontSize: 15,
           }}
         >
-          {blogData.description}
+          {blogData?.description}
         </Text>
       </View>
 
@@ -64,37 +64,41 @@ const OverviewBlog = ({blogData, tripId}) => {
 
 export default function BlogDetails() {
   const [likes, setLikes] = useState([]);
-  const [blogData, setBlogData] = useState({});
+  const [blogData, setBlogData] = useState();
   const [currentTripTab, setCurrentTripTab] = useState("Overview");
   const { id } = useLocalSearchParams();
   const { userData } = useContext(UserContext);
 
-    const isLike = useMemo(() => {
-      const hasLike = likes.some((like) => like.likedBy === userData.docId);
+  const isLike = useMemo(() => {
+    const hasLike = likes.some((like) => like.likedBy === userData.docId);
 
-      return hasLike;
-    }, [likes]);
+    return hasLike;
+  }, [likes]);
 
-    useEffect(() => {
-      fetchTripData();
-    }, []);
+  useEffect(() => {
+    fetchTripData();
+  }, []);
 
-    useEffect(() => {
-      const likesQuery = query(
-        collection(db, "Likes"),
-        where("blogId", "==",  id)
-      );
-      const unsubscribe = onSnapshot(likesQuery, (querySnapshot) => {
-        const likesData = [];
-        querySnapshot.forEach((doc) => {
-          likesData.push(doc.data());
-        });
-    
-        setLikes(likesData);
+  useEffect(() => {
+    const likesQuery = query(
+      collection(db, "Likes"),
+      where("blogId", "==", id)
+    );
+    const unsubscribe = onSnapshot(likesQuery, (querySnapshot) => {
+      const likesData = [];
+      querySnapshot.forEach((doc) => {
+        likesData.push(doc.data());
       });
-  
-      return () => unsubscribe();
-    }, [id]);
+      setLikes(likesData);
+    });
+    return () => unsubscribe();
+  }, [id]);
+
+    useEffect(() => {
+      if (blogData) {
+        handleAddView();
+      }
+    }, [blogData]);
 
     const fetchTripData = async () => {
       try {
@@ -108,7 +112,18 @@ export default function BlogDetails() {
           ...blogResponse.docData,
           tripData: tripResponse.docData,
         });
+      } catch (error) {
+        console.log("There was an error: ", error);
+        showToast("error", "Something went wrong. Please try again.", error);
+      }
+    };
 
+    const handleAddView = async () => {
+      console.log(blogData.views, 'viewas')
+      try {
+        await updateSingleDoc("Blogs", id, {
+          views: blogData.views + 1,
+        });
       } catch (error) {
         console.log("There was an error: ", error);
         showToast("error", "Something went wrong. Please try again.", error);
@@ -235,7 +250,7 @@ export default function BlogDetails() {
               fontSize: 15,
             }}
           >
-            {/* {blog.views || 0} */} 0
+            {blogData?.views || 0}
           </Text>
         </View>
         <View flexDirection="row" gap={10} alignItems="center">
