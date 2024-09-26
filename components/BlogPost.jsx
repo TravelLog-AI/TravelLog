@@ -87,7 +87,7 @@ export default function BlogPost({blog}) {
 
   const handlePressIn = () => {
     Animated.spring(scaleValue, {
-      toValue: 1.05, // Scale up to 1.05x
+      toValue: 0.95, // Scale up to 1.05x
       useNativeDriver: true,
     }).start();
   };
@@ -105,111 +105,135 @@ export default function BlogPost({blog}) {
   }
 
   return (
-    <TouchableHighlight onPressIn={handlePressIn} onPressOut={handlePressOut} onPress={directToDetails} underlayColor={Colors.LIGHT_BACKGROUND}>
-      <Animated.View style={{transform: [{scale: scaleValue}]}}>
-    <View style={{ flexDirection: "row", gap: 10, alignItems: "flex-start", paddingRight: 50 }}>
-      <Avatar.Text size={30} label="B" />
+    <TouchableHighlight
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      onPress={directToDetails}
+      underlayColor={Colors.LIGHT_BACKGROUND}
+    >
+      <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 10,
+            alignItems: "flex-start",
+            paddingRight: 50,
+          }}
+        >
+          <Avatar.Text size={30} label="B" />
 
-      <View>
-        {/* User & Post Info */}
-        <View>
-          <Text style={{ fontFamily: "open-sans-bold", fontSize: 15 }}>
-            {blog?.userName}
-          </Text>
-          <Text
-            style={{
-              fontFamily: "open-sans",
-              fontSize: 15,
-              color: Colors.DARK_GREY,
-            }}
-          >
-            {moment(blog?.createdAt.toDate()).fromNow()}
-          </Text>
-        </View>
+          <View>
+            {/* User & Post Info */}
+            <View>
+              <Text style={{ fontFamily: "open-sans-bold", fontSize: 15 }}>
+                {blog?.userName}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "open-sans",
+                  fontSize: 15,
+                  color: Colors.DARK_GREY,
+                }}
+              >
+                {moment(blog?.createdAt.toDate()).fromNow()}
+              </Text>
+            </View>
 
-        {/* Post Heading */}
-        <View>
-          <Text
-            style={{
-              fontFamily: "open-sans-bold",
-              fontSize: 20,
-              marginVertical: 10,
-            }}
-          >
-            {blog?.title}
-          </Text>
-          <Text style={{ fontFamily: "open-sans", fontSize: 15 }}>
-            {blog?.description}
-          </Text>
-
-        </View>
-        {blog?.imageURL ? (
-          <Image
-            source={{
-              uri: blog.imageURL,
-            }}
-            style={{
-              width: "100%",
-              height: 200,
-              borderRadius: 20,
-              marginTop: 20,
-            }}
-          />
-        ) : (
-          <Image
-            source={{
-              uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${
-                blog?.photoRef || ""
-              }&key=${process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY}`,
-            }}
-            style={{
-              width: "100%",
-              height: 200,
-              borderRadius: 20,
-              marginTop: 20,
-            }}
-          />
-        )}
-        <View flexDirection="row" gap={20} alignItems="center" marginTop={10}>
-          <View flexDirection="row" gap={2} alignItems="center">
-            <PrimaryButton
-              onPress={() => {
-                if (isLike) {
-                  handleUnlike();
-                } else {
-                  handleLike();
-                }
-              }}
-              style={{ padding: 5, backgroundColor: "transparent", margin: 0 }}
+            {/* Post Heading */}
+            <View>
+              <Text
+                style={{
+                  fontFamily: "open-sans-bold",
+                  fontSize: 20,
+                  marginVertical: 10,
+                }}
+              >
+                {blog?.title}
+              </Text>
+              <Text style={{ fontFamily: "open-sans", fontSize: 15 }}>
+                {blog?.description}
+              </Text>
+            </View>
+            {blog?.imageURL ? (
+              <Image
+                source={{
+                  uri: blog.imageURL,
+                }}
+                style={{
+                  width: "100%",
+                  height: 200,
+                  borderRadius: 20,
+                  marginTop: 20,
+                }}
+              />
+            ) : (
+              <Image
+                source={{
+                  uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${
+                    blog?.photoRef || ""
+                  }&key=${process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY}`,
+                }}
+                style={{
+                  width: "100%",
+                  height: 200,
+                  borderRadius: 20,
+                  marginTop: 20,
+                }}
+              />
+            )}
+            <View
+              flexDirection="row"
+              gap={20}
+              alignItems="center"
+              marginTop={10}
             >
-              <AntDesign name={isLike ? 'like1' : 'like2'} size={20} color={isLike ? Colors.PRIMARY : "grey"} />
-            </PrimaryButton>
-            <Text
-              style={{
-                fontFamily: "open-sans",
-                color: Colors.DARK_GREY,
-                fontSize: 15,
-              }}
-            >
-              {likes.length || 0}
-            </Text>
+              <View flexDirection="row" gap={2} alignItems="center">
+                <PrimaryButton
+                  onPress={() => {
+                    if (isLike) {
+                      handleUnlike();
+                    } else {
+                      handleLike();
+                    }
+                  }}
+                  style={{
+                    padding: 5,
+                    backgroundColor: "transparent",
+                    margin: 0,
+                  }}
+                >
+                  <AntDesign
+                    name={isLike ? "like1" : "like2"}
+                    size={20}
+                    color={isLike ? Colors.PRIMARY : "grey"}
+                  />
+                </PrimaryButton>
+                <Text
+                  style={{
+                    fontFamily: "open-sans",
+                    color: Colors.DARK_GREY,
+                    fontSize: 15,
+                  }}
+                >
+                  {likes.length || 0}
+                </Text>
+              </View>
+              <View flexDirection="row" gap={5} alignItems="center">
+                <AntDesign name="eyeo" size={20} color="grey" />
+                <Text
+                  style={{
+                    fontFamily: "open-sans",
+                    color: Colors.DARK_GREY,
+                    fontSize: 15,
+                  }}
+                >
+                  {blog.views || 0}
+                </Text>
+              </View>
+            </View>
           </View>
-          <View flexDirection="row" gap={5} alignItems="center">
-            <AntDesign name="eyeo" size={20} color="grey" />
-            <Text
-              style={{
-                fontFamily: "open-sans",
-                color: Colors.DARK_GREY,
-                fontSize: 15,
-              }}
-            >
-              {blog.views || 0}
-            </Text>
-          </View>
         </View>
-      </View>
-    </View>
-    </Animated.View>
+      </Animated.View>
     </TouchableHighlight>
   );
 }
