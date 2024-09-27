@@ -6,119 +6,27 @@ import {
   Animated,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Colors } from "../constants/Colors";
-import { showToast } from "../utils/toast";
+import { Colors } from "../../constants/Colors";
+import { showToast } from "../../utils/toast";
 import axios from "axios";
-import { googlePlaceAPI } from "../constants/env";
+import { googlePlaceAPI } from "../../constants/env";
 import { FAB } from "react-native-paper";
-import { getPhoto } from "../utils/map";
-import { updateSingleDoc } from "../utils/db";
+import { getPhoto } from "../../utils/map";
+import { updateSingleDoc } from "../../utils/db";
 import { arrayUnion } from "firebase/firestore";
-import NotFound from "./NotFound";
-import { fetchPlaceDetails } from "../utils/googleMap";
-import PlaceDetails from "./PlaceDetails";
-import useScale from "../hooks/animations/useScale";
+import NotFound from "../NotFound";
+import { fetchPlaceDetails } from "../../utils/googleMap";
+import PlaceDetails from "../PlaceDetails";
+import useScale from "../../hooks/animations/useScale";
 import { TouchableOpacity } from "react-native";
-
-const Landmark = ({ place }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const { scaleValue, handlePressIn, handlePressOut } = useScale();
-
-  const photoLink = place?.photos
-    ? getPhoto(place?.photos[0]?.photo_reference)
-    : require("../assets/images/not_found.jpg");
-
-  return (
-    <TouchableOpacity
-      onPress={() => setIsExpanded(!isExpanded)}
-      style={{ width: "100%", alignSelf: "flex-start" }}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      activeOpacity={1}
-    >
-      <Animated.View
-        style={{
-          width: "100%",
-          alignSelf: "flex-start",
-          backgroundColor: Colors.LIGHT_BACKGROUND,
-          height: undefined, // This allows the height to adjust to content
-          flexGrow: 1, // Allows the content to grow as needed
-          borderRadius: 20,
-          transform: [{ scale: scaleValue }],
-        }}
-      >
-        <View style={{ position: "relative", width: "100%", height: 200 }}>
-          <Image
-            source={{ uri: photoLink }}
-            style={{
-              width: "100%",
-              height: "100%",
-              borderRadius: 20,
-              opacity: 0.8,
-            }}
-          />
-          <View
-            style={{
-              position: "absolute",
-              top: 10,
-              left: 10,
-              backgroundColor: Colors.WHITE,
-              paddingVertical: 5,
-              paddingHorizontal: 10,
-              borderRadius: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "open-sans-bold",
-                color: Colors.PRIMARY,
-                fontSize: 15,
-              }}
-            >
-              ⭐ {place.rating}
-            </Text>
-          </View>
-          <View
-            style={{
-              position: "absolute",
-              bottom: 10,
-              left: 10,
-              paddingVertical: 5,
-              paddingHorizontal: 15,
-              borderWidth: 1,
-              borderColor: Colors.LIGHT_BACKGROUND,
-              borderRadius: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "open-sans-bold",
-                fontSize: 20,
-                color: Colors.LIGHT_BACKGROUND,
-              }}
-            >
-              {place.name}
-            </Text>
-          </View>
-        </View>
-
-        {/* Additional Place Details */}
-
-        {isExpanded && (
-          <View style={{padding: 10}}>
-            <PlaceDetails place={place} />
-          </View>
-        )}
-      </Animated.View>
-    </TouchableOpacity>
-  );
-};
+import { Swipeable } from "react-native-gesture-handler";
+import { FontAwesome } from "@expo/vector-icons";
+import Landmark from "./Landmark";
 
 const LandmarkToAdd = ({ place, handleAdd }) => {
   const photoLink = place?.photos
     ? getPhoto(place?.photos[0]?.photo_reference)
-    : require("../assets/images/not_found.jpg");
+    : require("../../assets/images/not_found.jpg");
 
   return (
     <View
@@ -218,6 +126,7 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
             details: detailedLandmark?.editorial_summary?.overview || "",
             types: detailedLandmark?.types || [],
             rating: detailedLandmark?.rating || 0,
+            place_id: detailedLandmark.place_id,
           };
 
           return dataToAdd;
@@ -254,39 +163,42 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
   };
 
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        gap: 15,
-        marginTop: 20,
-        marginBottom: 50,
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-      }}
-    >
-      {landmarksInItinerary.length > 0 ? (
-        landmarksInItinerary.map((landmark, index) => {
-          return <Landmark key={index} place={landmark} />;
-        })
-      ) : (
-        <NotFound text="No Landmarks Found" />
-      )}
+      <View
+        style={{
+          flexDirection: "column",
+          gap: 20,
+          marginTop: 20,
+          marginBottom: 50,
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          paddingHorizontal: 20,
+        }}
+      >
 
-      {isOwner && (
-        <ScrollView horizontal>
-          {landmarkList.length > 0 &&
-            landmarkList.map((landmark, index) => {
-              return (
-                <LandmarkToAdd
-                  key={index}
-                  place={landmark}
-                  handleAdd={() => handleAddLandmark(landmark)}
-                />
-              );
-            })}
-        </ScrollView>
-      )}
-    </View>
+        {landmarksInItinerary.length > 0 ? (
+          landmarksInItinerary.map((landmark, index) => {
+            return <Landmark key={index} place={landmark} placeList={landmarksInItinerary} tripId={tripId} />;
+          })
+        ) : (
+          <NotFound text="No Landmarks Found" />
+        )}
+
+        {isOwner && (
+          <ScrollView horizontal>
+            {landmarkList.length > 0 &&
+              landmarkList.map((landmark, index) => {
+                return (
+                  <LandmarkToAdd
+                    key={index}
+                    place={landmark}
+                    handleAdd={() => handleAddLandmark(landmark)}
+                  />
+                );
+              })}
+          </ScrollView>
+        )}
+      </View>
   );
 }
+  

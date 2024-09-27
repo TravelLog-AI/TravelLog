@@ -64,7 +64,7 @@ export default function AddNewItinerary({
     setAdding({name: place.name, isAdding: true, isSuccess: false});
     try {
       const newPlace = await fetchPlaceDetails(place.place_id);
-
+      
       const addedActivityData = {
         name: newPlace.name,
         image_url: "",

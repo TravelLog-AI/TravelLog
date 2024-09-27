@@ -7,7 +7,7 @@ import { fetchDoc, updateSingleDoc } from '../../utils/db';
 import { tripDetailTabs } from '../../constants/arrays';
 import { TripOverviewContent } from '../../components/TripDetails/TripOverview';
 import { Avatar, Divider } from 'react-native-paper';
-import Landmarks from '../../components/Landmarks';
+import Landmarks from '../../components/Landmarks/Landmarks';
 import TripItinerary from '../../components/TripDetails/TripItinerary';
 import TripAdvisor from '../../components/TripDetails/TripAdvisor';
 import { Colors } from '../../constants/Colors';

@@ -62,7 +62,7 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks, isO
   
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, paddingBottom: isOwner ? 200 : 0 }}>
+    <>
       <AddNewItinerary
         open={isOpenAddNewPlace}
         onClose={() => setIsOpenAddNewPlace(false)}
@@ -173,7 +173,8 @@ export default function TripItinerary({tripId, itineraryData, tripLandmarks, isO
         >
           Add a new place
         </PrimaryButton>
-      </View>}
-    </GestureHandlerRootView>
+      </View>
+      }
+    </>
   );
 }

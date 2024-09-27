@@ -39,7 +39,7 @@ export default function HotelList({ tripData, currentTab }) {
       setHotelList(response.data.properties);
     } catch (error) {
       console.log("There was an error: ", error);
-      showToast("error", "There was an error", error);
+      showToast("error", "Invalid Date", error);
     }
   };
   return (
