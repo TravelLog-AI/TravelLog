@@ -3,7 +3,6 @@ import {
   Text,
   Image,
   ScrollView,
-  TouchableHighlight,
   Animated,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -19,6 +18,7 @@ import NotFound from "./NotFound";
 import { fetchPlaceDetails } from "../utils/googleMap";
 import PlaceDetails from "./PlaceDetails";
 import useScale from "../hooks/animations/useScale";
+import { TouchableOpacity } from "react-native";
 
 const Landmark = ({ place }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -30,12 +30,12 @@ const Landmark = ({ place }) => {
     : require("../assets/images/not_found.jpg");
 
   return (
-    <TouchableHighlight
+    <TouchableOpacity
       onPress={() => setIsExpanded(!isExpanded)}
       style={{ width: "100%", alignSelf: "flex-start" }}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      underlayColor='none'
+      activeOpacity={1}
     >
       <Animated.View
         style={{
@@ -111,7 +111,7 @@ const Landmark = ({ place }) => {
           </View>
         )}
       </Animated.View>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 };
 

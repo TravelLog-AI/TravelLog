@@ -1,19 +1,28 @@
-import { View, Text, Image, TouchableHighlight, Animated } from 'react-native'
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { Avatar } from 'react-native-paper'
-import { Colors } from '../constants/Colors'
-import moment from 'moment';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import PrimaryButton from './Primary/Button';
-import { showToast } from '../utils/toast';
-import { UserContext } from '../context/UserContext';
-import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
-import { fetchData, updateSingleDoc } from '../utils/db';
-import { db } from '../config/firebase.config';
-import { useRouter } from 'expo-router';
-import useScale from '../hooks/animations/useScale';
+import { View, Text, Image, Animated, TouchableOpacity } from "react-native";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { Avatar } from "react-native-paper";
+import { Colors } from "../constants/Colors";
+import moment from "moment";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import PrimaryButton from "./Primary/Button";
+import { showToast } from "../utils/toast";
+import { UserContext } from "../context/UserContext";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
+import { updateSingleDoc } from "../utils/db";
+import { db } from "../config/firebase.config";
+import { useRouter } from "expo-router";
+import useScale from "../hooks/animations/useScale";
 
-export default function BlogPost({blog}) {
+export default function BlogPost({ blog }) {
   const [likes, setLikes] = useState([]);
 
   const router = useRouter();
@@ -22,22 +31,23 @@ export default function BlogPost({blog}) {
   // Animation
   const { scaleValue, handlePressIn, handlePressOut } = useScale();
 
-
   const isLike = useMemo(() => {
     const hasLike = likes.some((like) => like.likedBy === userData.docId);
-    
+
     return hasLike;
-  
   }, [likes]);
 
   useEffect(() => {
-    const likesQuery = query(collection(db, 'Likes'), where('blogId', '==', blog.id));
+    const likesQuery = query(
+      collection(db, "Likes"),
+      where("blogId", "==", blog.id)
+    );
     const unsubscribe = onSnapshot(likesQuery, (querySnapshot) => {
       const likesData = [];
       querySnapshot.forEach((doc) => {
         likesData.push(doc.data());
       });
-  
+
       setLikes(likesData);
     });
 
@@ -46,8 +56,8 @@ export default function BlogPost({blog}) {
 
   const handleLike = async () => {
     try {
-      const likesCollection = collection(db, 'Likes');
-      
+      const likesCollection = collection(db, "Likes");
+
       const createdAt = new Date();
       await addDoc(likesCollection, {
         likedBy: userData.docId,
@@ -55,18 +65,17 @@ export default function BlogPost({blog}) {
         blogId: blog.id,
       });
 
-      await updateSingleDoc('Blogs', blog.id, {likes: blog.likes + 1});
-
+      await updateSingleDoc("Blogs", blog.id, { likes: blog.likes + 1 });
     } catch (error) {
-      console.log('There was an error: ', error);
-      showToast('error', 'There was an error', error);
+      console.log("There was an error: ", error);
+      showToast("error", "There was an error", error);
     }
   };
 
   const handleUnlike = async () => {
     try {
-      const likesCollection = collection(db, 'Likes');
-      
+      const likesCollection = collection(db, "Likes");
+
       const likesQuery = query(
         likesCollection,
         where("blogId", "==", blog.id),
@@ -75,28 +84,27 @@ export default function BlogPost({blog}) {
       const querySnapshot = await getDocs(likesQuery);
 
       const deletePromise = querySnapshot.docs.map(async (likeDoc) => {
-        await deleteDoc(doc(db, 'Likes', likeDoc.id));
+        await deleteDoc(doc(db, "Likes", likeDoc.id));
       });
 
       await Promise.all(deletePromise);
-      await updateSingleDoc('Blogs', blog.id, {likes: blog.likes - 1});
+      await updateSingleDoc("Blogs", blog.id, { likes: blog.likes - 1 });
     } catch (error) {
-      console.log('There was an error: ', error);
-      showToast('error', 'There was an error', error);
+      console.log("There was an error: ", error);
+      showToast("error", "There was an error", error);
     }
   };
 
-
   const directToDetails = () => {
-    router.push(`/blog/${blog.id}`)
-  }
+    router.push(`/blog/${blog.id}`);
+  };
 
   return (
-    <TouchableHighlight
+    <TouchableOpacity
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       onPress={directToDetails}
-      underlayColor={Colors.LIGHT_BACKGROUND}
+      activeOpacity={1}
     >
       <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
         <View
@@ -221,6 +229,6 @@ export default function BlogPost({blog}) {
           </View>
         </View>
       </Animated.View>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 }

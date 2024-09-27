@@ -10,6 +10,7 @@ import CreateBlog from "../../Create/CreateBlog";
 import { createStyles } from "../../Create/styles";
 import Toast from "react-native-toast-message";
 import { showToast } from "../../../utils/toast";
+import BackButton from '../../BackButton';
 
 export default function CreateModal({ open, onClose }) {
   const [currentTab, setCurrentTab] = useState(TABS.TRIP);
@@ -21,7 +22,7 @@ export default function CreateModal({ open, onClose }) {
         isVisible={open}
         style={[createStyles.container, { zIndex: 0 }]}
       >
-        <View
+        {/* <View
           style={{
             display: "flex",
             width: "100%",
@@ -38,7 +39,8 @@ export default function CreateModal({ open, onClose }) {
           >
             <Entypo name="cross" size={30} color={Colors.GREY} />
           </PrimaryButton>
-        </View>
+        </View> */}
+        <BackButton onPress={onClose} />
 
         {/* Tabs */}
         <CreateTabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
