@@ -6,8 +6,9 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import PrimaryButton from "../Primary/Button";
 import NotFound from "../NotFound";
 import { overviewSubTabs } from "../../constants/arrays";
-import Landmarks from "../Landmarks";
+import Landmarks from "../Landmarks/Landmarks";
 import HotelList from "../HotelList";
+
 
 export const TripOverviewContent = ({tripData}) => {
   return (
@@ -64,7 +65,7 @@ export default function TripOverview({tripData, coordinates, tripId, isOwner}) {
   const [currentTab, setCurrentTab] = useState('Flights');
   
   return (
-    <View>
+    <View style={{width: '100%'}}>
       <Text style={tripDetailsStyle.heading}>Overview</Text>
       <TripOverviewContent tripData={tripData} />
 

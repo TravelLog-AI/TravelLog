@@ -6,6 +6,7 @@ import { RootSiblingParent } from "react-native-root-siblings";
 import Toast from "react-native-toast-message";
 import UserProvider from "../context/UserContext";
 import CreateTripProvider from "../context/CreateTripContext";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
   useFonts({
@@ -19,13 +20,15 @@ export default function RootLayout() {
     <RootSiblingParent>
       <UserProvider>
         <CreateTripProvider>
-          <PaperProvider theme={theme}>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="index" />
-              <Stack.Screen name="(tabs)" />
-            </Stack>
-            <Toast />
-          </PaperProvider>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <PaperProvider theme={theme}>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="index" />
+                <Stack.Screen name="(tabs)" />
+              </Stack>
+              <Toast />
+            </PaperProvider>
+          </GestureHandlerRootView>
         </CreateTripProvider>
       </UserProvider>
     </RootSiblingParent>

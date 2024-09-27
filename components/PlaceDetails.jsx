@@ -22,7 +22,7 @@ export default function PlaceDetails({ place }) {
         style={{
           display: "flex",
           flexDirection: "row",
-          gap: 5,
+          gap: 10,
           alignItems: "center",
           marginRight: 10,
         }}
@@ -42,7 +42,7 @@ export default function PlaceDetails({ place }) {
         style={{
           display: "flex",
           flexDirection: "row",
-          gap: 5,
+          gap: 10,
           alignItems: isExpandHours ? "flex-start" : "center",
         }}
       >
@@ -126,7 +126,7 @@ export default function PlaceDetails({ place }) {
           style={{
             display: "flex",
             flexDirection: "row",
-            gap: 5,
+            gap: 10,
             alignItems: "center",
           }}
         >
@@ -147,7 +147,7 @@ export default function PlaceDetails({ place }) {
         style={{
           display: "flex",
           flexDirection: "row",
-          gap: 5,
+          gap: 10,
           alignItems: "center",
         }}
       >
