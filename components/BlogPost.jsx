@@ -11,6 +11,7 @@ import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, query, where }
 import { fetchData, updateSingleDoc } from '../utils/db';
 import { db } from '../config/firebase.config';
 import { useRouter } from 'expo-router';
+import useScale from '../hooks/animations/useScale';
 
 export default function BlogPost({blog}) {
   const [likes, setLikes] = useState([]);
@@ -19,7 +20,7 @@ export default function BlogPost({blog}) {
   const { userData } = useContext(UserContext);
 
   // Animation
-  const scaleValue = useRef(new Animated.Value(1)).current;
+  const { scaleValue, handlePressIn, handlePressOut } = useScale();
 
 
   const isLike = useMemo(() => {
@@ -83,20 +84,6 @@ export default function BlogPost({blog}) {
       console.log('There was an error: ', error);
       showToast('error', 'There was an error', error);
     }
-  };
-
-  const handlePressIn = () => {
-    Animated.spring(scaleValue, {
-      toValue: 0.95, // Scale up to 1.05x
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.spring(scaleValue, {
-      toValue: 1, // Scale back to 1x
-      useNativeDriver: true,
-    }).start();
   };
 
 

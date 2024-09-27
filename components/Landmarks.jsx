@@ -4,6 +4,7 @@ import {
   Image,
   ScrollView,
   TouchableHighlight,
+  Animated,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Colors } from "../constants/Colors";
@@ -17,9 +18,12 @@ import { arrayUnion } from "firebase/firestore";
 import NotFound from "./NotFound";
 import { fetchPlaceDetails } from "../utils/googleMap";
 import PlaceDetails from "./PlaceDetails";
+import useScale from "../hooks/animations/useScale";
 
 const Landmark = ({ place }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const { scaleValue, handlePressIn, handlePressOut } = useScale();
 
   const photoLink = place?.photos
     ? getPhoto(place?.photos[0]?.photo_reference)
@@ -29,8 +33,11 @@ const Landmark = ({ place }) => {
     <TouchableHighlight
       onPress={() => setIsExpanded(!isExpanded)}
       style={{ width: "100%", alignSelf: "flex-start" }}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      underlayColor='none'
     >
-      <View
+      <Animated.View
         style={{
           width: "100%",
           alignSelf: "flex-start",
@@ -38,6 +45,7 @@ const Landmark = ({ place }) => {
           height: undefined, // This allows the height to adjust to content
           flexGrow: 1, // Allows the content to grow as needed
           borderRadius: 20,
+          transform: [{ scale: scaleValue }],
         }}
       >
         <View style={{ position: "relative", width: "100%", height: 200 }}>
@@ -102,7 +110,7 @@ const Landmark = ({ place }) => {
             <PlaceDetails place={place} />
           </View>
         )}
-      </View>
+      </Animated.View>
     </TouchableHighlight>
   );
 };
@@ -158,24 +166,29 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
 
   useEffect(() => {
     if (tripData && landmarkList.length > 0) {
+
+      // Set display landmarks
       if (tripData?.landmarks && tripData?.landmarks?.length > 0) {
         setLandmarksInItinerary(tripData.landmarks);
         return;
       }
 
-      const landmarkNames = [];
-      tripData.itinerary.forEach((day) => {
-        day.activities.forEach((activity) => {
-          landmarkNames.push(activity.name);
+      // Handle initialize landmarks in trip data
+      if (isOwner) {
+        const landmarkNames = [];
+        tripData.itinerary.forEach((day) => {
+          day.activities.forEach((activity) => {
+            landmarkNames.push(activity.name);
+          });
         });
-      });
-
-      const landmarkExisted = landmarkList.filter((landmark) =>
-        landmarkNames.includes(landmark.name)
-      );
-
-      setLandmarksInItinerary(landmarkExisted);
-      handleAddLandmarks(landmarkExisted);
+  
+        const landmarkExisted = landmarkList.filter((landmark) =>
+          landmarkNames.includes(landmark.name)
+        );
+  
+        setLandmarksInItinerary(landmarkExisted);
+        handleAddLandmarks(landmarkExisted);
+      }
     }
   }, [tripData, landmarkList]);
   const fetchLandmarks = async () => {
@@ -229,7 +242,6 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
   };
 
   const checkIsLandmarkValid = (landmark) => {
-    console.log(tripData, "tripData");
     if (!tripData?.landmarks || tripData?.landmarks?.length === 0) {
       return true;
     }
@@ -258,9 +270,7 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
           return <Landmark key={index} place={landmark} />;
         })
       ) : (
-        // <View style={{justifyContent: 'center', alignItems: 'center', width: '100%'}}>
         <NotFound text="No Landmarks Found" />
-        // </View>
       )}
 
       {isOwner && (
