@@ -16,6 +16,7 @@ import { updateSingleDoc } from "../utils/db";
 import { arrayUnion } from "firebase/firestore";
 import NotFound from "./NotFound";
 import { fetchPlaceDetails } from "../utils/googleMap";
+import PlaceDetails from "./PlaceDetails";
 
 const Landmark = ({ place }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -25,7 +26,10 @@ const Landmark = ({ place }) => {
     : require("../assets/images/not_found.jpg");
 
   return (
-    <TouchableHighlight style={{ width: "100%", alignSelf: "flex-start" }}>
+    <TouchableHighlight
+      onPress={() => setIsExpanded(!isExpanded)}
+      style={{ width: "100%", alignSelf: "flex-start" }}
+    >
       <View
         style={{
           width: "100%",
@@ -33,9 +37,10 @@ const Landmark = ({ place }) => {
           backgroundColor: Colors.LIGHT_BACKGROUND,
           height: undefined, // This allows the height to adjust to content
           flexGrow: 1, // Allows the content to grow as needed
+          borderRadius: 20,
         }}
       >
-        <View style={{ width: "100%", height: 200 }}>
+        <View style={{ position: "relative", width: "100%", height: 200 }}>
           <Image
             source={{ uri: photoLink }}
             style={{
@@ -91,13 +96,12 @@ const Landmark = ({ place }) => {
         </View>
 
         {/* Additional Place Details */}
-        <View>
-          <Text>Place Details</Text>
-          <Text>Place Details</Text>
-          <Text>Place Details</Text>
-          <Text>Place Details</Text>
-          <Text>Place Details</Text>
-        </View>
+
+        {isExpanded && (
+          <View style={{padding: 10}}>
+            <PlaceDetails place={place} />
+          </View>
+        )}
       </View>
     </TouchableHighlight>
   );
@@ -188,17 +192,6 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
   };
 
   const handleAddLandmarks = async (landmarksToAdd) => {
-    // const formatLandmarks = landmarksToAdd.map((landmark) => {
-    //   const {
-    //     icon,
-    //     icon_background_color,
-    //     icon_mask_base_uri,
-    //     plus_code,
-    //     ...restOfData
-    //   } = landmark;
-    //   return { ...restOfData };
-    // });
-
     try {
       const detailedLandmarks = await Promise.all(
         landmarksToAdd.map(async (landmark) => {
@@ -209,11 +202,12 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
             reference: detailedLandmark.reference,
             geo_coordinates: detailedLandmark.geometry.location,
             opening_hours: detailedLandmark?.opening_hours || {},
-            best_time_to_visit: "",
-            details: detailedLandmark?.editorial_summary.overview || "",
+            details: detailedLandmark?.editorial_summary?.overview || "",
             types: detailedLandmark?.types || [],
             rating: detailedLandmark?.rating || 0,
           };
+
+          return dataToAdd;
         })
       )
       await updateSingleDoc("Trips", tripId, {
