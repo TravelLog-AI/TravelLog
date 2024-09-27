@@ -65,8 +65,9 @@ export default function PlaceDetails({ place }) {
               }}
             >
               {isExpandHours ? (
-                openingHours.map((day) => (
+                openingHours.map((day, index) => (
                   <Text
+                    key={index}
                     style={{
                       fontFamily: "open-sans-medium",
                       fontSize: 12,
@@ -164,6 +165,7 @@ export default function PlaceDetails({ place }) {
             place.types.map((type, index) => {
               return (
                 <Text
+                  key={index}
                   style={{
                     fontFamily: "open-sans-medium",
                     fontSize: 12,
