@@ -1,4 +1,11 @@
-import { TouchableOpacity, ScrollView, View, Text, Image } from "react-native";
+import {
+  TouchableOpacity,
+  ScrollView,
+  View,
+  Text,
+  Image,
+  Animated,
+} from "react-native";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { tabsStyles } from "./styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,18 +13,17 @@ import CreateModal from "../../components/Modals/Create/Create";
 import { Colors } from "../../constants/Colors";
 import { Avatar, Divider } from "react-native-paper";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import DestinationSummary from "../../components/DestinationSummary";
 import { UserContext } from "../../context/UserContext";
 import { showToast } from "../../utils/toast";
 import { GetPhotoRef } from "../../utils/googleMap";
 import { getPhoto } from "../../utils/map";
 import { fetchData } from "../../utils/db";
-import { collection, doc, onSnapshot, query, Timestamp, where } from "firebase/firestore";
+import { Timestamp, where } from "firebase/firestore";
 import NotFound from "../../components/NotFound";
 import BlogPost from "../../components/BlogPost";
-import { db } from "../../config/firebase.config";
-import { useRouter } from "expo-router";
 import Loading from "../../components/Loading";
+import DestinationSummary from "../../components/DestinationSummary";
+import useScale from "../../hooks/animations/useScale";
 
 export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -27,9 +33,13 @@ export default function Home() {
   );
   const [topDestinations, setTopDestinations] = useState([]);
   const [topBlogs, setTopBlogs] = useState([]);
-  const router = useRouter();
 
   const { userData } = useContext(UserContext);
+  const {
+    scaleValue: createButtonScale,
+    handlePressIn,
+    handlePressOut,
+  } = useScale();
 
   useEffect(() => {
     if (userData && userData?.address?.name) {
@@ -151,7 +161,7 @@ export default function Home() {
   };
 
   if (isLoading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
@@ -264,10 +274,10 @@ export default function Home() {
           {topDestinations.length > 0 &&
             topDestinations.map((destination, index) => {
               return (
-                <TouchableOpacity onPress={() => router.push(`search/${destination}`)}>
-                  <DestinationSummary key={index} location={destination} />
-                </TouchableOpacity>
-            );
+                // <TouchableOpacity onPress={() => router.push(`search/${destination}`)}>
+                <DestinationSummary key={index} location={destination} />
+                // </TouchableOpacity>
+              );
             })}
         </ScrollView>
 
@@ -309,8 +319,13 @@ export default function Home() {
       <TouchableOpacity
         style={tabsStyles.createTripButton}
         onPress={() => setIsCreateOpen(true)}
+        activeOpacity={1}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
       >
-        <Ionicons name="add-circle" size={70} color={Colors.PRIMARY} />
+        <Animated.View style={{ transform: [{ scale: createButtonScale }] }}>
+          <Ionicons name="add-circle" size={70} color={Colors.PRIMARY} />
+        </Animated.View>
       </TouchableOpacity>
     </View>
   );
