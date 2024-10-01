@@ -67,10 +67,10 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
   const [landmarksInItinerary, setLandmarksInItinerary] = useState([]);
 
   useEffect(() => {
-    if (coordinates && landmarkList.length === 0) {
+    if (tripData && landmarkList.length === 0) {
       fetchLandmarks();
     }
-  }, [coordinates]);
+  }, [tripData]);
 
   useEffect(() => {
     if (tripData && landmarkList.length > 0) {
@@ -105,6 +105,14 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
         `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${coordinates?.lat},${coordinates?.lng}&radius=5000&type=tourist_attraction&fields=name,rating,formatted_address,editorial_summary,opening_hours,photos&key=${googlePlaceAPI}`
       );
 
+      if (tripData.landmarks && tripData.landmarks.length > 0) {
+        const filteredList = response.data.results.filter((landmark) => {
+          // Find if landmark already exist in trip data
+          const landmarkExist = tripData.landmarks.find((tripLandmark) => tripLandmark.name === landmark.name);
+          return !landmarkExist;
+        });
+        setLandmarkList(filteredList);
+      }
       setLandmarkList(response.data.results);
     } catch (error) {
       console.log("There was an error: ", error);
