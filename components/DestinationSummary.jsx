@@ -8,7 +8,7 @@ import { useRouter } from 'expo-router';
 import useScale from '../hooks/animations/useScale';
 import { TouchableOpacity } from 'react-native';
 
-const DestinationSummary = ({ location, style }) => {
+const DestinationSummary = ({ location, style, onPress }) => {
   const [photoLink, setPhotoLink] = useState("");
 
   const router = useRouter();
@@ -27,7 +27,7 @@ const DestinationSummary = ({ location, style }) => {
 
   return (
     <TouchableOpacity
-      onPress={() => router.push(`search/${location}`)}
+      onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       activeOpacity={1}

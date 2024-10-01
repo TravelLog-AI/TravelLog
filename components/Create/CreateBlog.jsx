@@ -133,7 +133,7 @@ export default function CreateBlog({onClose, showToast}) {
         {userTrips.length > 0 ? (
           userTrips.map((trip, index) => {
             return (
-              <TouchableOpacity
+              <View
                 key={index}
                 style={{
                   borderWidth: selectedTrip && selectedTrip.id === trip.id ? 2 : 0,
@@ -141,11 +141,12 @@ export default function CreateBlog({onClose, showToast}) {
                   marginHorizontal: 10,
                   borderRadius: 20,
                 }}
-                onPress={() => setSelectedTrip(trip)}
+                // onPress={() => setSelectedTrip(trip)}
               >
                 <DestinationSummary
                   location={trip.tripData.trip.destination}
                   style={{ marginHorizontal: 0 }}
+                  onPress={() => setSelectedTrip(trip)}
                 />
                 <View
                   style={{
@@ -168,7 +169,7 @@ export default function CreateBlog({onClose, showToast}) {
                     {minimizeDate(trip.tripData.trip.end_date)}
                   </Text>
                 </View>
-              </TouchableOpacity>
+              </View>
             );
           })
         ) : (

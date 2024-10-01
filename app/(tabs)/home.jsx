@@ -24,6 +24,7 @@ import BlogPost from "../../components/BlogPost";
 import Loading from "../../components/Loading";
 import DestinationSummary from "../../components/DestinationSummary";
 import useScale from "../../hooks/animations/useScale";
+import { useRouter } from "expo-router";
 
 export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -35,6 +36,7 @@ export default function Home() {
   const [topBlogs, setTopBlogs] = useState([]);
 
   const { userData } = useContext(UserContext);
+  const router = useRouter();
   const {
     scaleValue: createButtonScale,
     handlePressIn,
@@ -124,6 +126,7 @@ export default function Home() {
     try {
       const today = new Date();
       const firstDayOfThisMonth = new Date(today);
+      firstDayOfThisMonth.setHours(0, 0, 0, 0);
 
       firstDayOfThisMonth.setDate(1);
 
@@ -165,12 +168,8 @@ export default function Home() {
   }
 
   return (
-    <View>
-      <ScrollView
-        contentContainerStyle={{
-          backgroundColor: Colors.WHITE,
-        }}
-      >
+    <View style={{height: '100%', backgroundColor: Colors.WHITE}}>
+      <ScrollView>
         <CreateModal
           open={isCreateOpen}
           onClose={() => setIsCreateOpen(false)}
@@ -275,7 +274,7 @@ export default function Home() {
             topDestinations.map((destination, index) => {
               return (
                 // <TouchableOpacity onPress={() => router.push(`search/${destination}`)}>
-                <DestinationSummary key={index} location={destination} />
+                <DestinationSummary key={index} location={destination} onPress={() => router.push(`search/${destination}`)} />
                 // </TouchableOpacity>
               );
             })}
