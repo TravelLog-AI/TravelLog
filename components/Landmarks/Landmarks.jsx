@@ -111,9 +111,11 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
           const landmarkExist = tripData.landmarks.find((tripLandmark) => tripLandmark.name === landmark.name);
           return !landmarkExist;
         });
+
         setLandmarkList(filteredList);
+      } else {
+        setLandmarkList(response.data.results);
       }
-      setLandmarkList(response.data.results);
     } catch (error) {
       console.log("There was an error: ", error);
       showToast("error", "There was an error", error);
@@ -143,6 +145,12 @@ export default function Landmarks({ tripData, coordinates, tripId, isOwner }) {
       await updateSingleDoc("Trips", tripId, {
         "tripData.trip.landmarks": arrayUnion(...detailedLandmarks),
       });
+
+      const newRecommendLandmarks = landmarkList.filter((landmark) => {
+        return !landmarksToAdd.includes(landmark);
+      });
+
+      setLandmarkList(newRecommendLandmarks);
     } catch (error) {
       console.log("There was an error: ", error);
       showToast("error", "There was an error", error);
